@@ -1,0 +1,7 @@
+#!/usr/bin/expect
+set timeout 5
+spawn certutil -S -z ./random -n rsasrv -s "o=RSA Testing,cn=localhost" -t "u,u,u" -m 2001 -Z SHA1 -k rsa -g 2048 -c rsaca -v 12 -d nss-certs -f password-is-test.txt --keyUsage digitalSignature,keyEncipherment,dataEncipherment,keyAgreement,critical -2 -8 localhost
+expect -timeout 240 "Is this a CA certificate" { send "n\r" }
+expect "Enter the path length constraint" { send "\r" }
+expect "Is this a critical extension" { send "y\r" }
+interact

@@ -1,0 +1,10 @@
+#!/usr/bin/expect -f
+set timeout 5
+set nick [lindex $argv 0]
+set curve [lindex $argv 1]
+set hash [lindex $argv 2]
+spawn certutil -S -z ./random -n $nick -s "cn=EC Testing CA" -t "C,C,C" -m 1000 -Z $hash -k ec -q $curve -x -v 12 -d nss-certs -f password-is-test.txt --keyUsage digitalSignature,keyEncipherment,dataEncipherment,keyAgreement,certSigning,crlSigning,critical -2
+expect -timeout 240 "Is this a CA certificate" { send "y\r" }
+expect "Enter the path length constraint" { send "0\r" }
+expect "Is this a critical extension" { send "y\r" }
+interact
