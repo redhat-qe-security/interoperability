@@ -94,7 +94,7 @@ EOF" 0 "Create server query file"
         rlRun "grep -iE 'fail|error' server.log && grep -iE 'fail|error' server.err" 1 "Check if there are no errors in server output"
         rlRun "grep -iE 'fail|error' client.log && grep -iE 'fail|error' client.log" 1 "Check if there are no errors in client output"
         rlRun "grep 'Cipher Suite: TLS_DHE_RSA_WITH_AES_256_CBC_SHA' tshark.log" 0 "Verify that the negotiated cipher is the most secure supported by client by default"
-        rlRun "grep 'TLSv1.1 Record Layer' tshark.log" 0 "Verify that the connection uses TLS1.1"
+        rlRun "grep 'TLSv1.2 Record Layer' tshark.log" 0 "Verify that the connection uses TLS1.2"
         echo "============= server.log follows ================"
         cat server.log
         echo "============= server.err follows ================"
@@ -128,7 +128,7 @@ EOF" 0 "Create server query file"
         rlRun "grep -iE 'fail|error' server.log && grep -iE 'fail|error' server.err" 1 "Check if there are no errors in server output"
         rlRun "grep -iE 'fail|error' client.log && grep -iE 'fail|error' client.log" 1 "Check if there are no errors in client output"
         rlRun "grep 'Cipher Suite: TLS_DHE_RSA_WITH_AES_256_CBC_SHA' tshark.log" 0 "Verify that the negotiated cipher is the most secure supported by client by default"
-        rlRun "grep 'TLSv1.1 Record Layer' tshark.log" 0 "Verify that the connection uses TLS1.1"
+        rlRun "grep 'TLSv1.2 Record Layer' tshark.log" 0 "Verify that the connection uses TLS1.2"
         echo "============= server.log follows ================"
         cat server.log
         echo "============= server.err follows ================"
@@ -145,11 +145,25 @@ EOF" 0 "Create server query file"
 #        cat tshark.log
     rlPhaseEnd
 
-    rlPhaseStartTest "Test ECDH-ECDSA-AES256-SHA cipher with OpenSSL server"
-        rlRun "(echo server hello; sleep 2) | openssl s_server -key openssl-certs/ec_server_key.key -cert openssl-certs/ec_server_cert.pem -cipher ECDH-ECDSA-AES256-SHA > server.log 2> server.err &" 0 "Run server"
+C_NAME[1]="ECDHE-ECDSA-AES256-GCM-SHA384"
+C_HEXID[1]="C02C"
+C_NAME[2]="ECDHE-ECDSA-AES256-SHA384"
+C_HEXID[2]="C024"
+C_NAME[3]="ECDHE-ECDSA-AES256-SHA"
+C_HEXID[3]="C00A"
+C_NAME[4]="ECDH-ECDSA-AES256-GCM-SHA384"
+C_HEXID[4]="C02E"
+C_NAME[5]="ECDH-ECDSA-AES256-SHA384"
+C_HEXID[5]="C026"
+C_NAME[6]="ECDH-ECDSA-AES256-SHA"
+C_HEXID[6]="C005"
+
+for i in `seq 1 6`; do
+    rlPhaseStartTest "Test ${C_NAME[$i]} cipher with OpenSSL server"
+        rlRun "(echo server hello; sleep 2) | openssl s_server -key openssl-certs/ec_server_key.key -cert openssl-certs/ec_server_cert.pem -cipher ${C_NAME[$i]} > server.log 2> server.err &" 0 "Run server"
         server_pid=$!
         rlRun "kill -s 0 $server_pid" 0 "Check if server is running in background"
-        rlRun "$NSS_CLIENT -h localhost -p 4433 -d certdb -V 'tls1.0:tls1.1' -c ':C005' < client.in > client.log 2> client.err"
+        rlRun "$NSS_CLIENT -h localhost -p 4433 -d certdb -V 'ssl3:' -c ':${C_HEXID[$i]}' < client.in > client.log 2> client.err"
         rlRun "kill -s 15 $server_pid" 1 "Kill the server in case the test fails"
         rlRun "wait $server_pid" 0 "Wait for server to be killed"
         rlAssertGrep "client hello" server.log
@@ -165,6 +179,55 @@ EOF" 0 "Create server query file"
         echo "============= client.err follows ================"
         cat client.err
     rlPhaseEnd
+done
+
+C_NAME[1]="ECDHE-RSA-AES256-GCM-SHA384"
+C_HEXID[1]="C030"
+C_NAME[2]="ECDHE-RSA-AES256-SHA384"
+C_HEXID[2]="C028"
+C_NAME[3]="ECDHE-RSA-AES256-SHA"
+C_HEXID[3]="C014"
+C_NAME[4]="DHE-RSA-AES256-GCM-SHA384"
+C_HEXID[4]="009F"
+C_NAME[5]="DHE-RSA-AES256-SHA256"
+C_HEXID[5]="006B"
+C_NAME[6]="DHE-RSA-AES256-SHA"
+C_HEXID[6]="0039"
+C_NAME[7]="AES256-GCM-SHA384"
+C_HEXID[7]="009D"
+C_NAME[8]="AES256-SHA256"
+C_HEXID[8]="003D"
+C_NAME[9]="AES256-SHA"
+C_HEXID[9]="0035"
+C_NAME[10]="ECDHE-RSA-AES128-GCM-SHA256"
+C_HEXID[10]="C02F"
+C_NAME[11]="ECDHE-RSA-AES128-SHA256"
+C_HEXID[11]="C027"
+C_NAME[12]="AES128-GCM-SHA256"
+C_HEXID[12]="009C"
+
+for i in `seq 1 12`; do
+    rlPhaseStartTest "Test ${C_NAME[$i]} cipher with OpenSSL server"
+        rlRun "(echo server hello; sleep 2) | openssl s_server -key openssl-certs/rsa_server_key.key -cert openssl-certs/rsa_server_cert.pem -cipher ${C_NAME[$i]} > server.log 2> server.err &" 0 "Run server"
+        server_pid=$!
+        rlRun "kill -s 0 $server_pid" 0 "Check if server is running in background"
+        rlRun "$NSS_CLIENT -h localhost -p 4433 -d certdb -V 'ssl3:' -c ':${C_HEXID[$i]}' < client.in > client.log 2> client.err"
+        rlRun "kill -s 15 $server_pid" 1 "Kill the server in case the test fails"
+        rlRun "wait $server_pid" 0 "Wait for server to be killed"
+        rlAssertGrep "client hello" server.log
+        rlAssertGrep "server hello" client.log
+        rlRun "grep -iE 'fail|error' server.log && grep -iE 'fail|error' server.err" 1 "Check if there are no errors in server output"
+        rlRun "grep -iE 'fail|error' client.log && grep -iE 'fail|error' client.log" 1 "Check if there are no errors in client output"
+        echo "============= server.log follows ================"
+        cat server.log
+        echo "============= server.err follows ================"
+        cat server.err
+        echo "============= client.log follows ================"
+        cat client.log
+        echo "============= client.err follows ================"
+        cat client.err
+    rlPhaseEnd
+done
 
     rlPhaseStartCleanup
         rlRun "popd"
