@@ -1,0 +1,22 @@
+#!/usr/bin/expect
+set timeout 10
+set cert [lindex $argv 0]
+set cipher [lindex $argv 1]
+set opt [lindex $argv 2]
+if { $opt == "" } {
+    spawn openssl s_client -CAfile $cert -cipher $cipher -connect localhost:4433
+} else {
+    spawn openssl s_client -CAfile $cert -cipher $cipher -connect localhost:4433 $opt
+}
+expect {
+    "Verify return code: 0 " {
+        send "client hello\r"
+        expect "client hello" {
+            expect "client hello" {
+                close
+                exit 0
+            }
+        }
+    }
+}
+exit 1

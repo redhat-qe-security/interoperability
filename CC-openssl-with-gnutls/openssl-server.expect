@@ -1,0 +1,27 @@
+#!/usr/bin/expect
+set timeout 30
+set key [lindex $argv 0]
+set cert [lindex $argv 1]
+set ca [lindex $argv 2]
+set cipher [lindex $argv 3]
+spawn openssl s_server -key $key -cert $cert -CAfile $ca -cipher $cipher
+expect {
+    "Secure Renegotiation IS supported" {
+        expect {
+            "client hello" {
+                send "server hello\r"
+                expect {
+                    "DONE" {
+                        close
+                        exit 0
+                    }
+                }
+                expect eof {
+                    close
+                    exit 0
+                }
+            }
+        }
+    }
+}
+exit 1
