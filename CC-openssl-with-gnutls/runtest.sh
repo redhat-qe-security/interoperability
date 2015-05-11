@@ -76,6 +76,19 @@ rlJournalStart
         # EE key used
         declare -a C_KEY
 
+        #########################################
+        #              CAUTION!                 #
+        #########################################
+        # This test is part of Common Criteria  #
+        # interoperability testing, if you      #
+        # if you modify cipher settings below   #
+        # you have to modify it all three       #
+        # tests:                                #
+        # OpenSSL with GnuTLS                   #
+        # OpenSSL with NSS                      #
+        # NSS with GnuTLS                       #
+        #########################################
+
         #
         # RSA key exchange ciphers
         #
