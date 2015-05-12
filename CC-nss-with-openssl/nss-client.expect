@@ -1,0 +1,13 @@
+#!/usr/bin/expect
+set timeout 15
+spawn /bin/sh -c "$argv"
+expect {
+    "Enter Password" { send "RedHatEnterpriseLinux6.6\r"; exp_continue }
+    eof { }
+    "subject DN" { send "client hello\r"; 
+                   expect -timeout 5 "server hello";
+                   close}
+}
+set info [wait]
+#puts "Return from wait: $info"
+exit [lindex $info 3]

@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/nss/Interoperability/CC-nss-with-openssl
+Description: Test CC relevant ciphers with NSS and openssl
+Author: Hubert Kario <hkario@redhat.com>
