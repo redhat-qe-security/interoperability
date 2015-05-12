@@ -31,10 +31,11 @@
 . /usr/share/beakerlib/beakerlib.sh || exit 1
 
 PACKAGE="openssl"
+PACKAGES="nss gnutls"
 
 rlJournalStart
     rlPhaseStartSetup
-        rlAssertRpm $PACKAGE
+        rlAssertRpm --all
         rlRun "rlImport openssl/certgen"
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "cp gnutls-client.expect openssl-client.expect openssl-server.expect $TmpDir"
@@ -81,8 +82,8 @@ rlJournalStart
         #########################################
         # This test is part of Common Criteria  #
         # interoperability testing, if you      #
-        # if you modify cipher settings below   #
-        # you have to modify it all three       #
+        # modify cipher settings below          #
+        # you have to modify it in all three    #
         # tests:                                #
         # OpenSSL with GnuTLS                   #
         # OpenSSL with NSS                      #
