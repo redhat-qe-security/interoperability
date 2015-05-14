@@ -1,0 +1,21 @@
+#!/usr/bin/expect
+set timeout 10
+set cert [lindex $argv 0]
+set opt [lindex $argv 1]
+if { $opt == "" } {
+    spawn gnutls-cli --x509cafile $cert -p 4433 localhost
+} else {
+    spawn gnutls-cli --x509cafile $cert -p 4433 $opt localhost
+}
+expect {
+    "Handshake was completed" {
+        send "GET / HTTP/1.0\r\r";
+        expect {
+            "Generic Web Server" {
+                    close
+                    exit 0
+            }
+        }
+    }
+}
+exit 1
