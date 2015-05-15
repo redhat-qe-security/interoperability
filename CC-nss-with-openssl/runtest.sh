@@ -435,6 +435,8 @@ rlJournalStart
                       -c :${C_ID[$j]})
             if [[ ${C_KEY[$j]} =~ 'ecdsa' ]]; then
                 options+=(-e ${C_KEY[$j]%%/*})
+            elif [[ ${C_KEY[$j]} =~ 'dsa' ]]; then
+                options+=(-S ${C_KEY[$j]%%/*})
             else
                 options+=(-n ${C_KEY[$j]%%/*})
             fi
