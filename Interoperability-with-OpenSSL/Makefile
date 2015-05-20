@@ -59,7 +59,7 @@ $(METADATA): Makefile
 	@echo "Type:            Interoperability" >> $(METADATA)
 	@echo "TestTime:        15m" >> $(METADATA)
 	@echo "RunFor:          nss openssl" >> $(METADATA)
-	@echo "Requires:        nss nss-softokn nss-tools nss-util openssl" >> $(METADATA)
+	@echo "Requires:        nss nss-softokn nss-tools nss-util openssl tcpdump wireshark" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)
