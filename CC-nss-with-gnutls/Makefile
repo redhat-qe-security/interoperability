@@ -54,7 +54,7 @@ $(METADATA): Makefile
 	@echo "Type:            Interoperability" >> $(METADATA)
 	@echo "TestTime:        20m" >> $(METADATA)
 	@echo "RunFor:          gnutls nss" >> $(METADATA)
-	@echo "Requires:        gnutls gnutls-utils net-tools nss nss-tools openssl" >> $(METADATA)
+	@echo "Requires:        gnutls gnutls-utils net-tools nss nss-tools openssl expect" >> $(METADATA)
 	@echo "RhtsRequires:    library(openssl/certgen)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
