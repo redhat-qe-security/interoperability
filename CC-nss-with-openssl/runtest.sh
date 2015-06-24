@@ -432,7 +432,7 @@ rlJournalStart
             rlLogInfo "Test proper"
             declare -a options=()
             options+=(${SERVER_UTIL} -d sql:./nssdb/ -p 4433 -V tls1.0:
-                      -c :${C_ID[$j]})
+                      -c :${C_ID[$j]} -H 1)
             if [[ ${C_KEY[$j]} =~ 'ecdsa' ]]; then
                 options+=(-e ${C_KEY[$j]%%/*})
             elif [[ ${C_KEY[$j]} =~ 'dsa' ]]; then
