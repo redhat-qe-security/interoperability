@@ -111,6 +111,7 @@ rlJournalStart
         C_NAME[$i]="TLS_RSA_WITH_3DES_EDE_CBC_SHA"
         C_OPENSSL[$i]="DES-CBC3-SHA"
         C_ID[$i]="000A"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -121,6 +122,7 @@ rlJournalStart
         C_NAME[$i]="TLS_RSA_WITH_AES_128_CBC_SHA"
         C_OPENSSL[$i]="AES128-SHA"
         C_ID[$i]="002F"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -131,6 +133,7 @@ rlJournalStart
         C_NAME[$i]="TLS_RSA_WITH_AES_256_CBC_SHA"
         C_OPENSSL[$i]="AES256-SHA"
         C_ID[$i]="0035"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -141,6 +144,7 @@ rlJournalStart
         C_NAME[$i]="TLS_RSA_WITH_AES_128_CBC_SHA256"
         C_OPENSSL[$i]="AES128-SHA256"
         C_ID[$i]="003C"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -151,6 +155,7 @@ rlJournalStart
         C_NAME[$i]="TLS_RSA_WITH_AES_256_CBC_SHA256"
         C_OPENSSL[$i]="AES256-SHA256"
         C_ID[$i]="003D"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -161,6 +166,7 @@ rlJournalStart
         C_NAME[$i]="TLS_RSA_WITH_AES_128_GCM_SHA256"
         C_OPENSSL[$i]="AES128-GCM-SHA256"
         C_ID[$i]="009C"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -171,6 +177,7 @@ rlJournalStart
         C_NAME[$i]="TLS_RSA_WITH_AES_256_GCM_SHA384"
         C_OPENSSL[$i]="AES256-GCM-SHA384"
         C_ID[$i]="009D"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -185,6 +192,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA"
         C_OPENSSL[$i]="EDH-RSA-DES-CBC3-SHA"
         C_ID[$i]="0016"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -195,6 +203,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_RSA_WITH_AES_128_CBC_SHA"
         C_OPENSSL[$i]="DHE-RSA-AES128-SHA"
         C_ID[$i]="0033"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -205,6 +214,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_RSA_WITH_AES_256_CBC_SHA"
         C_OPENSSL[$i]="DHE-RSA-AES256-SHA"
         C_ID[$i]="0039"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -215,6 +225,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_RSA_WITH_AES_128_CBC_SHA256"
         C_OPENSSL[$i]="DHE-RSA-AES128-SHA256"
         C_ID[$i]="0067"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -225,6 +236,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_RSA_WITH_AES_256_CBC_SHA256"
         C_OPENSSL[$i]="DHE-RSA-AES256-SHA256"
         C_ID[$i]="006B"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -235,6 +247,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_RSA_WITH_AES_128_GCM_SHA256"
         C_OPENSSL[$i]="DHE-RSA-AES128-GCM-SHA256"
         C_ID[$i]="009E"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -245,6 +258,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"
         C_OPENSSL[$i]="DHE-RSA-AES256-GCM-SHA384"
         C_ID[$i]="009F"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -259,6 +273,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA"
         C_OPENSSL[$i]="EDH-DSS-DES-CBC3-SHA"
         C_ID[$i]="0013"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert dsa-ca)"
         C_CERT[$i]="$(x509Cert dsa-server)"
         C_KEY[$i]="$(x509Key dsa-server)"
@@ -269,6 +284,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_DSS_WITH_AES_128_CBC_SHA"
         C_OPENSSL[$i]="DHE-DSS-AES128-SHA"
         C_ID[$i]="0032"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert dsa-ca)"
         C_CERT[$i]="$(x509Cert dsa-server)"
         C_KEY[$i]="$(x509Key dsa-server)"
@@ -279,6 +295,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_DSS_WITH_AES_256_CBC_SHA"
         C_OPENSSL[$i]="DHE-DSS-AES256-SHA"
         C_ID[$i]="0038"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert dsa-ca)"
         C_CERT[$i]="$(x509Cert dsa-server)"
         C_KEY[$i]="$(x509Key dsa-server)"
@@ -289,6 +306,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_DSS_WITH_AES_128_CBC_SHA256"
         C_OPENSSL[$i]="DHE-DSS-AES128-SHA256"
         C_ID[$i]="0040"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert dsa-ca)"
         C_CERT[$i]="$(x509Cert dsa-server)"
         C_KEY[$i]="$(x509Key dsa-server)"
@@ -299,6 +317,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_DSS_WITH_AES_256_CBC_SHA256"
         C_OPENSSL[$i]="DHE-DSS-AES256-SHA256"
         C_ID[$i]="006A"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert dsa-ca)"
         C_CERT[$i]="$(x509Cert dsa-server)"
         C_KEY[$i]="$(x509Key dsa-server)"
@@ -309,6 +328,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_DSS_WITH_AES_128_GCM_SHA256"
         C_OPENSSL[$i]="DHE-DSS-AES128-GCM-SHA256"
         C_ID[$i]="00A2"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert dsa-ca)"
         C_CERT[$i]="$(x509Cert dsa-server)"
         C_KEY[$i]="$(x509Key dsa-server)"
@@ -319,6 +339,7 @@ rlJournalStart
         C_NAME[$i]="TLS_DHE_DSS_WITH_AES_256_GCM_SHA384"
         C_OPENSSL[$i]="DHE-DSS-AES256-GCM-SHA384"
         C_ID[$i]="00A3"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert dsa-ca)"
         C_CERT[$i]="$(x509Cert dsa-server)"
         C_KEY[$i]="$(x509Key dsa-server)"
@@ -333,6 +354,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA"
         C_OPENSSL[$i]="ECDHE-RSA-DES-CBC3-SHA"
         C_ID[$i]="C012"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -343,6 +365,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
         C_OPENSSL[$i]="ECDHE-RSA-AES128-SHA"
         C_ID[$i]="C013"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -353,6 +376,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA"
         C_OPENSSL[$i]="ECDHE-RSA-AES256-SHA"
         C_ID[$i]="C014"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -363,6 +387,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
         C_OPENSSL[$i]="ECDHE-RSA-AES128-SHA256"
         C_ID[$i]="C027"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -373,6 +398,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384"
         C_OPENSSL[$i]="ECDHE-RSA-AES256-SHA384"
         C_ID[$i]="C028"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -383,6 +409,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
         C_OPENSSL[$i]="ECDHE-RSA-AES128-GCM-SHA256"
         C_ID[$i]="C02F"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -393,6 +420,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
         C_OPENSSL[$i]="ECDHE-RSA-AES256-GCM-SHA384"
         C_ID[$i]="C030"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert rsa-ca)"
         C_CERT[$i]="$(x509Cert rsa-server)"
         C_KEY[$i]="$(x509Key rsa-server)"
@@ -407,6 +435,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA"
         C_OPENSSL[$i]="ECDHE-ECDSA-DES-CBC3-SHA"
         C_ID[$i]="C008"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert ecdsa-ca)"
         C_CERT[$i]="$(x509Cert ecdsa-server)"
         C_KEY[$i]="$(x509Key ecdsa-server)"
@@ -417,6 +446,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA"
         C_OPENSSL[$i]="ECDHE-ECDSA-AES128-SHA"
         C_ID[$i]="C009"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert ecdsa-ca)"
         C_CERT[$i]="$(x509Cert ecdsa-server)"
         C_KEY[$i]="$(x509Key ecdsa-server)"
@@ -427,6 +457,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA"
         C_OPENSSL[$i]="ECDHE-ECDSA-AES256-SHA"
         C_ID[$i]="C00A"
+        C_TLS1_2_ONLY[$i]="False"
         C_SUBCA[$i]="$(x509Cert ecdsa-ca)"
         C_CERT[$i]="$(x509Cert ecdsa-server)"
         C_KEY[$i]="$(x509Key ecdsa-server)"
@@ -437,6 +468,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256"
         C_OPENSSL[$i]="ECDHE-ECDSA-AES128-SHA256"
         C_ID[$i]="C023"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert ecdsa-ca)"
         C_CERT[$i]="$(x509Cert ecdsa-server)"
         C_KEY[$i]="$(x509Key ecdsa-server)"
@@ -447,6 +479,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384"
         C_OPENSSL[$i]="ECDHE-ECDSA-AES256-SHA384"
         C_ID[$i]="C024"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert ecdsa-ca)"
         C_CERT[$i]="$(x509Cert ecdsa-server)"
         C_KEY[$i]="$(x509Key ecdsa-server)"
@@ -457,6 +490,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
         C_OPENSSL[$i]="ECDHE-ECDSA-AES128-GCM-SHA256"
         C_ID[$i]="C02B"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert ecdsa-ca)"
         C_CERT[$i]="$(x509Cert ecdsa-server)"
         C_KEY[$i]="$(x509Key ecdsa-server)"
@@ -467,6 +501,7 @@ rlJournalStart
         C_NAME[$i]="TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
         C_OPENSSL[$i]="ECDHE-ECDSA-AES256-GCM-SHA384"
         C_ID[$i]="C02C"
+        C_TLS1_2_ONLY[$i]="True"
         C_SUBCA[$i]="$(x509Cert ecdsa-ca)"
         C_CERT[$i]="$(x509Cert ecdsa-server)"
         C_KEY[$i]="$(x509Key ecdsa-server)"
@@ -483,14 +518,29 @@ rlJournalStart
     rlPhaseEnd
 
     for j in ${!C_NAME[@]}; do
-        rlPhaseStartTest "GnuTLS server NSS client ${C_NAME[$j]} cipher"
+      for prot in tls1_2 tls1_1; do
+
+        # skip ciphers which work only in TLS1.2 protocol when testing TLS1.1
+        if [[ $prot == "tls1_1" ]] && [[ ${C_TLS1_2_ONLY[$j]} == "True" ]]; then
+            continue
+        fi
+
+
+        rlPhaseStartTest "GnuTLS server NSS client ${C_NAME[$j]} cipher $prot protocol"
             rlRun "gnutls-serv --http -p 4433 --x509keyfile ${C_KEY[$j]} \
                    --x509certfile <(cat ${C_CERT[$j]} ${C_SUBCA[$j]}) \
                    >server.log 2>server.err &"
             openssl_pid=$!
             rlRun "rlWaitForSocket 4433 -p $openssl_pid"
-            rlRun -s "expect nss-client.expect ${CLIENT_UTIL} -h localhost \
-                   -p 4433 -d sql:./ca-db/ -c :${C_ID[$j]} -V tls1.0:"
+            options=(${CLIENT_UTIL})
+            options+=(-h localhost -p 4433)
+            options+=(-d sql:./ca-db/ -c :${C_ID[$j]})
+            if [[ $prot == "tls1_2" ]]; then
+                options+=(-V tls1.0:)
+            else
+                options+=(-V tls1.0:tls1.1)
+            fi
+            rlRun -s "expect nss-client.expect ${options[*]}"
             rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
             rlAssertGrep "HTTP/1.0 200 OK" "$rlRun_LOG"
             rlRun "kill $openssl_pid"
@@ -500,7 +550,7 @@ rlJournalStart
             fi
         rlPhaseEnd
 
-        rlPhaseStartTest "NSS server GnuTLS client ${C_NAME[$j]} cipher"
+        rlPhaseStartTest "NSS server GnuTLS client ${C_NAME[$j]} cipher $prot protocol"
             rlLogInfo "Preparing NSS database"
             rlRun "mkdir nssdb/"
             rlRun "certutil -N --empty-password -d sql:./nssdb/"
@@ -527,6 +577,9 @@ rlJournalStart
             options=(gnutls-cli)
             options+=(--x509cafile $(x509Cert ca))
             options+=(-p 4433 localhost)
+            if [[ $prot == "tls1_1" ]]; then
+                options+=(--priority NORMAL:-VERS-TLS1.2)
+            fi
             rlRun -s "expect gnutls-client.expect ${options[*]}"
             rlAssertGrep "GET / HTTP/1.0" $rlRun_LOG
             rlAssertGrep "Server: Generic Web Server" $rlRun_LOG
@@ -538,7 +591,7 @@ rlJournalStart
             rlRun "rm -rf nssdb/" 0 "Clean up NSS database"
         rlPhaseEnd
 
-        rlPhaseStartTest "GnuTLS server NSS client ${C_NAME[$j]} cipher client cert"
+        rlPhaseStartTest "GnuTLS server NSS client ${C_NAME[$j]} cipher $prot protocol client cert"
             rlLogInfo "Prepare nss db for client"
             rlRun "mkdir nssdb/"
             rlRun "certutil -N --empty-password -d sql:./nssdb"
@@ -563,7 +616,11 @@ rlJournalStart
             options+=(-d sql:./nssdb/)
             options+=(-n $nickname)
             options+=(-c :${C_ID[$j]})
-            options+=(-V tls1.0:)
+            if [[ $prot == "tls1_2" ]]; then
+                options+=(-V tls1.0:)
+            else
+                options+=(-V tls1.0:tls1.1)
+            fi
             rlRun -s "expect nss-client.expect ${options[*]}"
             rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
             rlAssertGrep "HTTP/1.0 200 OK" "$rlRun_LOG"
@@ -575,7 +632,7 @@ rlJournalStart
             rlRun "rm -rf nssdb"
         rlPhaseEnd
 
-        rlPhaseStartTest "NSS server GnuTLS client ${C_NAME[$j]} cipher client cert"
+        rlPhaseStartTest "NSS server GnuTLS client ${C_NAME[$j]} cipher $prot protocol client cert"
             rlLogInfo "Preparing NSS database"
             rlRun "mkdir nssdb/"
             rlRun "certutil -N --empty-password -d sql:./nssdb/"
@@ -607,6 +664,9 @@ rlJournalStart
             options+=(-p 4433 localhost)
             options+=(--x509certfile ${C_CLNT_CERT[$j]})
             options+=(--x509keyfile ${C_CLNT_KEY[$j]})
+            if [[ $prot == tls1_1 ]]; then
+                options+=(--priority NORMAL:-VERS-TLS1.2)
+            fi
             rlRun -s "expect gnutls-client.expect ${options[*]}"
             rlAssertGrep "GET / HTTP/1.0" $rlRun_LOG
             rlAssertGrep "Server: Generic Web Server" $rlRun_LOG
@@ -617,6 +677,7 @@ rlJournalStart
             fi
             rlRun "rm -rf nssdb/" 0 "Clean up NSS database"
         rlPhaseEnd
+      done
     done
 
     rlPhaseStartCleanup
