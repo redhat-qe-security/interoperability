@@ -445,7 +445,10 @@ rlJournalStart
             rlRun "expect nss-server.expect ${options[*]} >server.log 2>server.err &"
             nss_pid=$!
             rlRun "rlWaitForSocket 4433 -p $nss_pid"
-            rlRun "expect gnutls-client.expect $(x509Cert ca)"
+            options=(gnutls-cli)
+            options+=(--x509cafile $(x509Cert ca))
+            options+=(-p 4433 localhost)
+            rlRun "expect gnutls-client.expect ${options[*]}"
             rlRun "kill $nss_pid"
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
