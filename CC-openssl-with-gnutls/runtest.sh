@@ -395,12 +395,21 @@ rlJournalStart
 
     for j in ${!C_NAME[@]}; do
         rlPhaseStartTest "OpenSSL server GnuTLS client ${C_NAME[$j]} cipher"
-            rlRun "expect openssl-server.expect ${C_KEY[$j]} ${C_CERT[$j]} \
-                   <(cat $(x509Cert ca) ${C_SUBCA[$j]}) ${C_OPENSSL[$j]} \
+            options=(openssl s_server)
+            options+=(-key ${C_KEY[$j]} -cert ${C_CERT[$j]})
+            options+=(-CAfile '<(cat $(x509Cert ca) ${C_SUBCA[$j]})')
+            options+=(-cipher ${C_OPENSSL[$j]})
+            rlRun "expect openssl-server.expect ${options[*]} \
                    >server.log 2>server.err &"
             openssl_pid=$!
             rlRun "rlWaitForSocket 4433 -p $openssl_pid"
-            rlRun "expect gnutls-client.expect $(x509Cert ca)"
+
+            options=(gnutls-cli)
+            options+=(--x509cafile $(x509Cert ca))
+            options+=(-p 4433 localhost)
+            rlRun -s "expect gnutls-client.expect ${options[*]}"
+            rlAssertGrep "client hello" $rlRun_LOG
+            rlAssertGrep "server hello" $rlRun_LOG
             rlRun "kill $openssl_pid"
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
@@ -414,7 +423,15 @@ rlJournalStart
                    >server.log 2>server.err &"
             gnutls_pid=$!
             rlRun "rlWaitForSocket 4433 -p $gnutls_pid"
-            rlRun "expect openssl-client.expect $(x509Cert ca) ${C_OPENSSL[$j]}"
+
+            options=(openssl s_client)
+            options+=(-CAfile $(x509Cert ca))
+            options+=(-cipher ${C_OPENSSL[$j]})
+            options+=(-connect localhost:4433)
+            rlRun -s "expect openssl-client.expect ${options[*]}"
+            rlAssertGrep "client hello" $rlRun_LOG
+            rlRun "[[ $(grep 'client hello' $rlRun_LOG | wc -l) -eq 2 ]]" 0 \
+                "Check if server echo'ed back our message"
             rlRun "kill $gnutls_pid"
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
