@@ -556,6 +556,7 @@ rlJournalStart
             rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
             rlAssertGrep "HTTP/1.0 200 OK" "$rlRun_LOG"
             rlRun "kill $openssl_pid"
+            rlRun "rlWait -s 9 $openssl_pid" 0-255
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
@@ -596,6 +597,7 @@ rlJournalStart
             rlAssertGrep "GET / HTTP/1.0" $rlRun_LOG
             rlAssertGrep "Server: Generic Web Server" $rlRun_LOG
             rlRun "kill $nss_pid"
+            rlRun "rlWait -s 9 $nss_pid" 0-255
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
@@ -637,6 +639,7 @@ rlJournalStart
             rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
             rlAssertGrep "HTTP/1.0 200 OK" "$rlRun_LOG"
             rlRun "kill $openssl_pid"
+            rlRun "rlWait -s 9 $openssl_pid" 0-255
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
@@ -683,6 +686,7 @@ rlJournalStart
             rlAssertGrep "GET / HTTP/1.0" $rlRun_LOG
             rlAssertGrep "Server: Generic Web Server" $rlRun_LOG
             rlRun "kill $nss_pid"
+            rlRun "rlWait -s 9 $nss_pid" 0-255
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
