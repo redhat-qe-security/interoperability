@@ -47,6 +47,11 @@ rlJournalStart
         rlRun "pushd $TmpDir"
         rlRun "x509KeyGen ca"
         rlRun "x509KeyGen rsa-ca"
+        # in FIPS mode by default in testing we don't allow OpenSSL to generate
+        # 1024 bit keys, but since we're not testing OpenSSL and we're
+        # verifying that legacy code works, we can override this system wide
+        # setting
+        unset OPENSSL_ENFORCE_MODULUS_BITS
         # --conservative is a workaround for RHBZ# 1238279 & 1238290
         rlRun "x509KeyGen -t dsa --conservative -s 1024 1024dsa-ca"
         rlRun "x509KeyGen -t dsa --conservative dsa-ca"
