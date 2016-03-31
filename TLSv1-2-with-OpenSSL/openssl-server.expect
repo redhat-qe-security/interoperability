@@ -1,0 +1,23 @@
+#!/usr/bin/expect
+set timeout 30
+spawn /bin/sh -c "$argv"
+expect {
+    "Secure Renegotiation IS supported" {
+        expect {
+            "client hello" {
+                send "server hello\r"
+                expect {
+                    "DONE" {
+                        close
+                        exit 0
+                    }
+                }
+                expect eof {
+                    close
+                    exit 0
+                }
+            }
+        }
+    }
+}
+exit 1

@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/gnutls/Interoperability/TLSv1-2-with-OpenSSL
+Description: Verify interoperability of GnuTLS TLSv1.2 with OpenSSL
+Author: Hubert Kario <hkario@redhat.com>
