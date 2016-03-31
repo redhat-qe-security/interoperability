@@ -37,6 +37,7 @@ rlJournalStart
     rlPhaseStartSetup
         rlAssertRpm --all
         rlRun "rlImport openssl/certgen"
+        rlRun "rlImport distribution/fips"
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "cp gnutls-client.expect openssl-client.expect openssl-server.expect $TmpDir"
         rlRun "pushd $TmpDir"
@@ -81,6 +82,51 @@ rlJournalStart
         #
         # RSA key exchange ciphers
         #
+        if ! fipsIsEnabled; then
+            C_NAME[$i]="TLS_RSA_WITH_RC4_128_MD5"
+            C_OPENSSL[$i]="RC4-MD5"
+            C_ID[$i]="0004"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert rsa-ca)"
+            C_CERT[$i]="$(x509Cert rsa-server)"
+            C_KEY[$i]="$(x509Key rsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert rsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key rsa-client)"
+            i=$(($i+1))
+
+            C_NAME[$i]="TLS_RSA_WITH_RC4_128_SHA"
+            C_OPENSSL[$i]="RC4-SHA"
+            C_ID[$i]="0005"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert rsa-ca)"
+            C_CERT[$i]="$(x509Cert rsa-server)"
+            C_KEY[$i]="$(x509Key rsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert rsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key rsa-client)"
+            i=$(($i+1))
+
+            C_NAME[$i]="TLS_RSA_WITH_CAMELLIA_128_CBC_SHA"
+            C_OPENSSL[$i]="CAMELLIA128-SHA"
+            C_ID[$i]="0041"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert rsa-ca)"
+            C_CERT[$i]="$(x509Cert rsa-server)"
+            C_KEY[$i]="$(x509Key rsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert rsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key rsa-client)"
+            i=$(($i+1))
+
+            C_NAME[$i]="TLS_RSA_WITH_CAMELLIA_256_CBC_SHA"
+            C_OPENSSL[$i]="CAMELLIA256-SHA"
+            C_ID[$i]="0084"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert rsa-ca)"
+            C_CERT[$i]="$(x509Cert rsa-server)"
+            C_KEY[$i]="$(x509Key rsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert rsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key rsa-client)"
+            i=$(($i+1))
+        fi
 
         C_NAME[$i]="TLS_RSA_WITH_3DES_EDE_CBC_SHA"
         C_OPENSSL[$i]="DES-CBC3-SHA"
@@ -141,6 +187,30 @@ rlJournalStart
         # FFDHE+RSA
         #
 
+        if ! fipsIsEnabled; then
+            C_NAME[$i]="TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA"
+            C_OPENSSL[$i]="DHE-RSA-CAMELLIA128-SHA"
+            C_ID[$i]="0045"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert rsa-ca)"
+            C_CERT[$i]="$(x509Cert rsa-server)"
+            C_KEY[$i]="$(x509Key rsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert rsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key rsa-client)"
+            i=$(($i+1))
+
+            C_NAME[$i]="TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA"
+            C_OPENSSL[$i]="DHE-RSA-CAMELLIA256-SHA"
+            C_ID[$i]="0088"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert rsa-ca)"
+            C_CERT[$i]="$(x509Cert rsa-server)"
+            C_KEY[$i]="$(x509Key rsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert rsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key rsa-client)"
+            i=$(($i+1))
+        fi
+
         C_NAME[$i]="TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA"
         C_OPENSSL[$i]="EDH-RSA-DES-CBC3-SHA"
         C_ID[$i]="0016"
@@ -199,9 +269,33 @@ rlJournalStart
         #
         # FFDHE+DSS
         #
-
         # since 2048bit DSA is undefined for TLS1.1, use 1024bit DSA
-        # for cipher suites which can be used in TLS1.1, RHBZ#1238333
+        # for cipher suites, RHBZ#1238333
+
+        if ! fipsIsEnabled; then
+            C_NAME[$i]="TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA"
+            C_OPENSSL[$i]="DHE-DSS-CAMELLIA128-SHA"
+            C_ID[$i]="0044"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert 1024dsa-ca)"
+            C_CERT[$i]="$(x509Cert 1024dsa-server)"
+            C_KEY[$i]="$(x509Key 1024dsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert 1024dsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key 1024dsa-client)"
+            i=$(($i+1))
+
+            C_NAME[$i]="TLS_DHE_DSS_WITH_CAMELLIA_256_CBC_SHA"
+            C_OPENSSL[$i]="DHE-DSS-CAMELLIA256-SHA"
+            C_ID[$i]="0087"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert 1024dsa-ca)"
+            C_CERT[$i]="$(x509Cert 1024dsa-server)"
+            C_KEY[$i]="$(x509Key 1024dsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert 1024dsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key 1024dsa-client)"
+            i=$(($i+1))
+        fi
+
         C_NAME[$i]="TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA"
         C_OPENSSL[$i]="EDH-DSS-DES-CBC3-SHA"
         C_ID[$i]="0013"
