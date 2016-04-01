@@ -500,6 +500,7 @@ rlJournalStart
             else
                 rlAssertGrep "Protocol  : TLSv1.2" $rlRun_LOG
             fi
+            rlAssertGrep "CN=John Smith" server.log
             rlRun "kill $gnutls_pid"
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
