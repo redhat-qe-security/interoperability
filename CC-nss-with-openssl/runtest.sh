@@ -547,7 +547,7 @@ rlJournalStart
             rlAssertGrep "client hello" "$rlRun_LOG"
             rlAssertGrep "server hello" "$rlRun_LOG"
             rlRun "kill $openssl_pid"
-            rlRun "rlWait -s SIGKILL $openssl_pid" 143
+            rlRun "rlWait -s SIGKILL $openssl_pid" 143,137
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
@@ -585,7 +585,7 @@ rlJournalStart
             fi
             rlRun -s "expect openssl-client.expect ${options[*]}"
             rlRun "kill $nss_pid"
-            rlRun "rlWait -s SIGKILL $nss_pid" 143
+            rlRun "rlWait -s SIGKILL $nss_pid" 143,137
             rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
             rlAssertGrep "Server: Generic Web Server" "$rlRun_LOG"
             if ! rlGetPhaseState; then
@@ -628,7 +628,7 @@ rlJournalStart
             rlAssertGrep "client hello" "$rlRun_LOG"
             rlAssertGrep "server hello" "$rlRun_LOG"
             rlRun "kill $openssl_pid"
-            rlRun "rlWait -s SIGKILL $openssl_pid" 143
+            rlRun "rlWait -s SIGKILL $openssl_pid" 143,137
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
@@ -670,7 +670,7 @@ rlJournalStart
             rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
             rlAssertGrep "Server: Generic Web Server" "$rlRun_LOG"
             rlRun "kill $nss_pid"
-            rlRun "rlWait -s SIGKILL $nss_pid" 143
+            rlRun "rlWait -s SIGKILL $nss_pid" 143,137
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
