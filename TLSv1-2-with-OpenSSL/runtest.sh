@@ -41,6 +41,11 @@ rlJournalStart
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "cp gnutls-client.expect openssl-client.expect openssl-server.expect $TmpDir"
         rlRun "pushd $TmpDir"
+        # in FIPS mode by default in testing we don't allow OpenSSL to generate
+        # 1024 bit keys, but since we're not testing OpenSSL and we're
+        # verifying that legacy code works, we can override this system wide
+        # setting
+        unset OPENSSL_ENFORCE_MODULUS_BITS
         rlRun "x509KeyGen ca"
         rlRun "x509KeyGen rsa-ca"
         # --conservative is as a workaround for RHBZ# 1238279 & 1238290
