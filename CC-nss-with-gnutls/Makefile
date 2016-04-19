@@ -52,7 +52,7 @@ $(METADATA): Makefile
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
 	@echo "Description:     Test CC relevant ciphers with NSS and gnutls" >> $(METADATA)
 	@echo "Type:            Interoperability" >> $(METADATA)
-	@echo "TestTime:        90m" >> $(METADATA)
+	@echo "TestTime:        150m" >> $(METADATA)
 	@echo "RunFor:          gnutls nss" >> $(METADATA)
 	@echo "Requires:        gnutls gnutls-utils net-tools nss nss-tools openssl expect" >> $(METADATA)
 	@echo "RhtsRequires:    library(openssl/certgen)" >> $(METADATA)
