@@ -53,7 +53,7 @@ $(METADATA): Makefile
 	@echo "Description:     Test if renegotiation with OpenSSL works" >> $(METADATA)
 	@echo "Type:            Interoperability" >> $(METADATA)
 	@echo "TestTime:        10m" >> $(METADATA)
-	@echo "RunFor:          gnutls" >> $(METADATA)
+	@echo "RunFor:          gnutls openssl" >> $(METADATA)
 	@echo "Requires:        gnutls gnutls-utils openssl" >> $(METADATA)
 	@echo "RhtsRequires:    library(openssl/certgen)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
