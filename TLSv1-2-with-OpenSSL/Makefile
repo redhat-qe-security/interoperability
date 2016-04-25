@@ -53,7 +53,7 @@ $(METADATA): Makefile
 	@echo "Description:     Verify interoperability of GnuTLS TLSv1.2 with OpenSSL" >> $(METADATA)
 	@echo "Type:            Interoperability" >> $(METADATA)
 	@echo "TestTime:        30m" >> $(METADATA)
-	@echo "RunFor:          gnutls" >> $(METADATA)
+	@echo "RunFor:          gnutls openssl" >> $(METADATA)
 	@echo "Requires:        gnutls gnutls-utils openssl" >> $(METADATA)
 	@echo "RhtsRequires:    library(openssl/certgen)" >> $(METADATA)
 	@echo "RhtsRequires:    library(distribution/fips)" >> $(METADATA)
