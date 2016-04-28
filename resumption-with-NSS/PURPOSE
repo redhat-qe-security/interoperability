@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/gnutls/Interoperability/resumption-with-NSS
+Description: Verify that session resumption between GnuTLS and NSS works
+Author: Hubert Kario <hkario@redhat.com>
