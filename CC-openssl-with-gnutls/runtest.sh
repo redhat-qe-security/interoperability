@@ -546,7 +546,8 @@ rlJournalStart
             rlRun -s "expect gnutls-client.expect ${options[*]}"
             rlAssertGrep "client hello" $rlRun_LOG
             rlAssertGrep "server hello" $rlRun_LOG
-            rlRun "kill $openssl_pid"
+            rlRun "kill $openssl_pid" 0,1
+            rlRun "rlWait -s 9 $openssl_pid" 143
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
@@ -600,7 +601,8 @@ rlJournalStart
             rlRun -s "expect gnutls-client.expect ${options[*]}"
             rlAssertGrep "client hello" $rlRun_LOG
             rlAssertGrep "server hello" $rlRun_LOG
-            rlRun "kill $openssl_pid"
+            rlRun "kill $openssl_pid" 0,1
+            rlRun "rlWait -s 9 $openssl_pid" 143
             if ! rlGetPhaseState; then
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
