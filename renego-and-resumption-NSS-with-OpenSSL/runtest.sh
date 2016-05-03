@@ -33,10 +33,13 @@
 PACKAGE="nss"
 PACKAGES="nss openssl"
 
-SERVER_UTIL="/usr/lib/nss/unsupported-tools/selfserv"
-CLIENT_UTIL="/usr/lib/nss/unsupported-tools/tstclnt"
-[ -f /usr/lib64/nss/unsupported-tools/selfserv ] && SERVER_UTIL="/usr/lib64/nss/unsupported-tools/selfserv"
-[ -f /usr/lib64/nss/unsupported-tools/tstclnt ] && CLIENT_UTIL="/usr/lib64/nss/unsupported-tools/tstclnt"
+SERVER_UTIL="/usr/lib64/nss/unsupported-tools/selfserv"
+CLIENT_UTIL="/usr/lib64/nss/unsupported-tools/tstclnt"
+STRSCLNT_UTIL="/usr/lib64/nss/unsupported-tools/strsclnt"
+[ ! -f $SERVER_UTIL ] && SERVER_UTIL="/usr/lib/nss/unsupported-tools/selfserv"
+[ ! -f $CLIENT_UTIL ] && CLIENT_UTIL="/usr/lib/nss/unsupported-tools/tstclnt"
+[ ! -f $STRSCLNT_UTIL ] && STRSCLNT_UTIL="/usr/lib/nss/unsupported-tools/strsclnt"
+
 
 rlJournalStart
     rlPhaseStartSetup
@@ -378,7 +381,7 @@ rlJournalStart
             rlRun "${options[*]} >server.log 2>server.err &"
             openssl_pid=$!
             rlRun "rlWaitForSocket 4433 -p $openssl_pid"
-            options=(/usr/lib64/nss/unsupported-tools/strsclnt)
+            options=($STRSCLNT_UTIL)
             options+=(-p 4433)
             options+=(-d sql:./ca-db/)
             options+=(-c 100 -P 20)
@@ -512,7 +515,7 @@ rlJournalStart
             rlRun "${options[*]} >server.log 2>server.err &"
             openssl_pid=$!
             rlRun "rlWaitForSocket 4433 -p $openssl_pid"
-            options=(/usr/lib64/nss/unsupported-tools/strsclnt)
+            options=($STRSCLNT_UTIL)
             options+=(-p 4433)
             options+=(-d sql:./nssdb/)
             options+=(-c 100 -P 20)
