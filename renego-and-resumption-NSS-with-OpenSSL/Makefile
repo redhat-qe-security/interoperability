@@ -52,7 +52,7 @@ $(METADATA): Makefile
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
 	@echo "Description:     Verify that renegotiation and resumption between NSS and OpenSSL works" >> $(METADATA)
 	@echo "Type:            Interoperability" >> $(METADATA)
-	@echo "TestTime:        30m" >> $(METADATA)
+	@echo "TestTime:        50m" >> $(METADATA)
 	@echo "RunFor:          nss openssl" >> $(METADATA)
 	@echo "Requires:        nss nss-tools openssl" >> $(METADATA)
 	@echo "RhtsRequires:    library(openssl/certgen)" >> $(METADATA)
