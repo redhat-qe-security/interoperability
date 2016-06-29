@@ -37,49 +37,52 @@ rlJournalStart
     rlPhaseStartSetup
         rlAssertRpm --all
         rlRun "rlImport openssl/certgen"
+        rlRun "rlImport distribution/fips"
         rlRun "TmpDir=\$(mktemp -d)" 0 "Creating tmp directory"
         rlRun "cp gnutls-client.expect openssl-client.expect openssl-server.expect $TmpDir"
         rlRun "pushd $TmpDir"
         rlRun "x509KeyGen ca"
         rlRun "x509KeyGen rsa-ca"
-        # --conservative is as a workaround for RHBZ# 1238279 & 1238290
-        rlRun "x509KeyGen -t dsa --conservative -s 1024 1024dsa-ca"
         rlRun "x509KeyGen -t dsa dsa-ca"
         rlRun "x509KeyGen -t ecdsa ecdsa-ca"
         rlRun "x509KeyGen rsa-server"
-        rlRun "x509KeyGen -t dsa --conservative -s 1024 1024dsa-server"
         rlRun "x509KeyGen -t dsa dsa-server"
         rlRun "x509KeyGen -t ecdsa ecdsa-server"
         rlRun "x509KeyGen rsa-client"
-        rlRun "x509KeyGen -t dsa --conservative -s 1024 1024dsa-client"
         rlRun "x509KeyGen -t dsa dsa-client"
         rlRun "x509KeyGen -t ecdsa ecdsa-client"
         rlRun "x509SelfSign ca"
         rlRun "x509CertSign --CA ca -t ca --DN 'CN=RSA CA' rsa-ca"
-        rlRun "x509CertSign --CA ca -t ca --DN 'CN=1024DSA CA' 1024dsa-ca"
         rlRun "x509CertSign --CA ca -t ca --DN 'CN=DSA CA' dsa-ca"
         rlRun "x509CertSign --CA ca -t ca --DN 'CN=ECDSA CA' ecdsa-ca"
         rlRun "x509CertSign --CA rsa-ca rsa-server"
-        rlRun "x509CertSign --CA 1024dsa-ca --md sha1 1024dsa-server"
         rlRun "x509CertSign --CA dsa-ca dsa-server"
         rlRun "x509CertSign --CA ecdsa-ca ecdsa-server"
         rlRun "x509CertSign --CA rsa-ca -t webclient rsa-client"
-        rlRun "x509CertSign --CA 1024dsa-ca -t webclient --md sha1 1024dsa-client"
         rlRun "x509CertSign --CA dsa-ca -t webclient dsa-client"
         rlRun "x509CertSign --CA ecdsa-ca -t webclient ecdsa-client"
         rlRun "x509DumpCert ca" 0 "Root CA"
         rlRun "x509DumpCert rsa-ca" 0 "Intermediate RSA CA"
         rlRun "x509DumpCert dsa-ca" 0 "Intermediate DSA CA"
-        rlRun "x509DumpCert 1024dsa-ca" 0 "Intermediate 1024DSA CA"
         rlRun "x509DumpCert ecdsa-ca" 0 "Intermediate ECDSA CA"
         rlRun "x509DumpCert rsa-server" 0 "Server RSA certificate"
-        rlRun "x509DumpCert 1024dsa-server" 0 "Server 1024DSA certificate"
         rlRun "x509DumpCert dsa-server" 0 "Server DSA certificate"
         rlRun "x509DumpCert ecdsa-server" 0 "Server ECDSA certificate"
         rlRun "x509DumpCert rsa-client" 0 "Client RSA certificate"
-        rlRun "x509DumpCert 1024dsa-client" 0 "Client 1024DSA certificate"
         rlRun "x509DumpCert dsa-client" 0 "Client DSA certificate"
         rlRun "x509DumpCert ecdsa-client" 0 "Client ECDSA certificate"
+        # --conservative is as a workaround for RHBZ# 1238279 & 1238290
+        if ! fipsIsEnabled; then
+            rlRun "x509KeyGen -t dsa --conservative -s 1024 1024dsa-ca"
+            rlRun "x509KeyGen -t dsa --conservative -s 1024 1024dsa-server"
+            rlRun "x509KeyGen -t dsa --conservative -s 1024 1024dsa-client"
+            rlRun "x509CertSign --CA ca -t ca --DN 'CN=1024DSA CA' 1024dsa-ca"
+            rlRun "x509CertSign --CA 1024dsa-ca --md sha1 1024dsa-server"
+            rlRun "x509CertSign --CA 1024dsa-ca -t webclient --md sha1 1024dsa-client"
+            rlRun "x509DumpCert 1024dsa-ca" 0 "Intermediate 1024DSA CA"
+            rlRun "x509DumpCert 1024dsa-server" 0 "Server 1024DSA certificate"
+            rlRun "x509DumpCert 1024dsa-client" 0 "Client 1024DSA certificate"
+        fi
         rlLogInfo "Loading configuration..."
 
         i=0
@@ -275,40 +278,42 @@ rlJournalStart
         # FFDHE+DSS
         #
 
-        # since 2048bit DSA is undefined for TLS1.1, use 1024bit DSA
-        # for cipher suites which can be used in TLS1.1, RHBZ#1238333
-        C_NAME[$i]="TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA"
-        C_OPENSSL[$i]="EDH-DSS-DES-CBC3-SHA"
-        C_ID[$i]="0013"
-        C_TLS1_2_ONLY[$i]="False"
-        C_SUBCA[$i]="$(x509Cert 1024dsa-ca)"
-        C_CERT[$i]="$(x509Cert 1024dsa-server)"
-        C_KEY[$i]="$(x509Key 1024dsa-server)"
-        C_CLNT_CERT[$i]="$(x509Cert 1024dsa-client)"
-        C_CLNT_KEY[$i]="$(x509Key 1024dsa-client)"
-        i=$(($i+1))
+        if ! fipsIsEnabled; then
+            # since 2048bit DSA is undefined for TLS1.1, use 1024bit DSA
+            # for cipher suites which can be used in TLS1.1, RHBZ#1238333
+            C_NAME[$i]="TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA"
+            C_OPENSSL[$i]="EDH-DSS-DES-CBC3-SHA"
+            C_ID[$i]="0013"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert 1024dsa-ca)"
+            C_CERT[$i]="$(x509Cert 1024dsa-server)"
+            C_KEY[$i]="$(x509Key 1024dsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert 1024dsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key 1024dsa-client)"
+            i=$(($i+1))
 
-        C_NAME[$i]="TLS_DHE_DSS_WITH_AES_128_CBC_SHA"
-        C_OPENSSL[$i]="DHE-DSS-AES128-SHA"
-        C_ID[$i]="0032"
-        C_TLS1_2_ONLY[$i]="False"
-        C_SUBCA[$i]="$(x509Cert 1024dsa-ca)"
-        C_CERT[$i]="$(x509Cert 1024dsa-server)"
-        C_KEY[$i]="$(x509Key 1024dsa-server)"
-        C_CLNT_CERT[$i]="$(x509Cert 1024dsa-client)"
-        C_CLNT_KEY[$i]="$(x509Key 1024dsa-client)"
-        i=$(($i+1))
+            C_NAME[$i]="TLS_DHE_DSS_WITH_AES_128_CBC_SHA"
+            C_OPENSSL[$i]="DHE-DSS-AES128-SHA"
+            C_ID[$i]="0032"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert 1024dsa-ca)"
+            C_CERT[$i]="$(x509Cert 1024dsa-server)"
+            C_KEY[$i]="$(x509Key 1024dsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert 1024dsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key 1024dsa-client)"
+            i=$(($i+1))
 
-        C_NAME[$i]="TLS_DHE_DSS_WITH_AES_256_CBC_SHA"
-        C_OPENSSL[$i]="DHE-DSS-AES256-SHA"
-        C_ID[$i]="0038"
-        C_TLS1_2_ONLY[$i]="False"
-        C_SUBCA[$i]="$(x509Cert 1024dsa-ca)"
-        C_CERT[$i]="$(x509Cert 1024dsa-server)"
-        C_KEY[$i]="$(x509Key 1024dsa-server)"
-        C_CLNT_CERT[$i]="$(x509Cert 1024dsa-client)"
-        C_CLNT_KEY[$i]="$(x509Key 1024dsa-client)"
-        i=$(($i+1))
+            C_NAME[$i]="TLS_DHE_DSS_WITH_AES_256_CBC_SHA"
+            C_OPENSSL[$i]="DHE-DSS-AES256-SHA"
+            C_ID[$i]="0038"
+            C_TLS1_2_ONLY[$i]="False"
+            C_SUBCA[$i]="$(x509Cert 1024dsa-ca)"
+            C_CERT[$i]="$(x509Cert 1024dsa-server)"
+            C_KEY[$i]="$(x509Key 1024dsa-server)"
+            C_CLNT_CERT[$i]="$(x509Cert 1024dsa-client)"
+            C_CLNT_KEY[$i]="$(x509Key 1024dsa-client)"
+            i=$(($i+1))
+        fi
 
         C_NAME[$i]="TLS_DHE_DSS_WITH_AES_128_CBC_SHA256"
         C_OPENSSL[$i]="DHE-DSS-AES128-SHA256"
