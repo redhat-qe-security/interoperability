@@ -65,7 +65,7 @@ rlJournalStart
         nss_pid=$!
         rlRun "rlWaitForSocket -p $nss_pid 4433"
         for sett in "NORMAL" "NORMAL:+VERS-TLS1.2" "NORMAL:-VERS-TLS1.2"; do
-            rlRun -s "gnutls-cli --priority '$sett' --resume --x509cafile $(x509Cert rsa-ca) --port 4433 localhost4 </dev/null"
+            rlRun -s "sleep 2 | gnutls-cli --priority '$sett' --resume --x509cafile $(x509Cert rsa-ca) --port 4433 localhost4"
             rlAssertGrep "This is a resumed session" $rlRun_LOG
             rlAssertNotGrep "failure" $rlRun_LOG -i
         done
