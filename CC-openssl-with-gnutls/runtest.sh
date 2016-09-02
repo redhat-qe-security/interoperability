@@ -557,6 +557,7 @@ rlJournalStart
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
             fi
+            rlRun "rlWaitForSocket 4433 --close"
         rlPhaseEnd
 
         rlPhaseStartTest "GnuTLS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol"
@@ -582,6 +583,7 @@ rlJournalStart
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
             fi
+            rlRun "rlWaitForSocket 4433 --close"
         rlPhaseEnd
 
         rlPhaseStartTest "OpenSSL server GnuTLS client ${C_NAME[$j]} cipher $prot protocol client cert"
@@ -612,6 +614,7 @@ rlJournalStart
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
             fi
+            rlRun "rlWaitForSocket 4433 --close"
         rlPhaseEnd
 
         rlPhaseStartTest "GnuTLS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol client cert"
@@ -638,6 +641,7 @@ rlJournalStart
                 rlRun "cat server.log" 0 "Server stdout"
                 rlRun "cat server.err" 0 "Server stderr"
             fi
+            rlRun "rlWaitForSocket 4433 --close"
         rlPhaseEnd
       done
     done
