@@ -34,7 +34,6 @@ while read test; do
     if [[ $? -ne 0 ]]; then
         EC=1
     fi
-    echo -e "\n"
     popd
 done <<< "$(find /workspace -type f ! -path "*/Library/*" -name "runtest.sh")"
 
