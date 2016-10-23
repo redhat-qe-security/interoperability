@@ -1,0 +1,20 @@
+language: bash
+sudo: required
+env:
+    matrix:
+        # COMP - reserved for component name if 50 minutes per job
+        #        is not enough
+        - COMP=none OS_TYPE=centos OS_VERSION=5
+        - COMP=none OS_TYPE=centos OS_VERSION=6
+        - COMP=none OS_TYPE=centos OS_VERSION=7
+        - COMP=none OS_TYPE=fedora OS_VERSION=24
+
+services:
+    - docker
+
+before_install:
+    - sudo apt-get update
+    - sudo docker pull ${OS_TYPE}:${OS_VERSION}
+
+script:
+    - ./scripts/test-setup.sh ${OS_TYPE} ${OS_VERSION} ${COMP}
