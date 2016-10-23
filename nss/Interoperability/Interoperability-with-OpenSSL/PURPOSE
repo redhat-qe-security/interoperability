@@ -1,0 +1,6 @@
+PURPOSE of /CoreOS/nss/Interoperability/Interoperability-with-OpenSSL
+Description: Check if nss and openssl can communicate with each other
+Author: Hubert Kario <hkario@redhat.com>
+
+Check if nss can understand and verify certificates signed by
+openssl and vice versa. Check also TLS communication.

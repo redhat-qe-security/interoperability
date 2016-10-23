@@ -1,0 +1,15 @@
+#!/usr/bin/expect
+set timeout 10
+spawn /bin/sh -c "$argv"
+expect {
+    "Handshake was completed" {
+        send "GET / HTTP/1.0\r\r";
+        expect {
+            "Generic Web Server" {
+                    close
+                    exit 0
+            }
+        }
+    }
+}
+exit 1
