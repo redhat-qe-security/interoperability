@@ -43,7 +43,6 @@ clean:
 	rm -f *~ $(BUILT_FILES)
 
 
-include /usr/share/rhts/lib/rhts-make.include
 
 $(METADATA): Makefile
 	@echo "Owner:           Hubert Kario <hkario@redhat.com>" > $(METADATA)
@@ -64,4 +63,3 @@ $(METADATA): Makefile
 	@echo "Releases:        -RHEL4 -RHELClient5 -RHELServer5" >> $(METADATA)
 	@echo "Bug:             1321112" >> $(METADATA)
 
-	rhts-lint $(METADATA)

@@ -48,7 +48,6 @@ clean:
 	rm -f *~ $(BUILT_FILES)
 
 
-include /usr/share/rhts/lib/rhts-make.include
 
 $(METADATA): Makefile
 	@echo "Owner:           Hubert Kario <hkario@redhat.com>" > $(METADATA)
@@ -65,4 +64,3 @@ $(METADATA): Makefile
 	@echo "Confidential:    no" >> $(METADATA)
 	@echo "Destructive:     no" >> $(METADATA)
 
-	rhts-lint $(METADATA)
