@@ -234,3 +234,4 @@ done
     rlPhaseEnd
 rlJournalPrintText
 rlJournalEnd
+rlGetTestState

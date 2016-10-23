@@ -651,3 +651,4 @@ rlJournalStart
     rlPhaseEnd
 rlJournalPrintText
 rlJournalEnd
+rlGetTestState
