@@ -2,12 +2,21 @@ language: bash
 sudo: required
 env:
     matrix:
-        # COMP - reserved for component name if 50 minutes per job
-        #        is not enough
-        - COMP=none OS_TYPE=centos OS_VERSION=5
-        - COMP=none OS_TYPE=centos OS_VERSION=6
-        - COMP=none OS_TYPE=centos OS_VERSION=7
-        - COMP=none OS_TYPE=fedora OS_VERSION=24
+        # openssl tests
+        - COMP=openssl OS_TYPE=centos OS_VERSION=5
+        - COMP=openssl OS_TYPE=centos OS_VERSION=6
+        - COMP=openssl OS_TYPE=centos OS_VERSION=7
+        - COMP=openssl OS_TYPE=fedora OS_VERSION=24
+        # nss tests
+        - COMP=nss OS_TYPE=centos OS_VERSION=5
+        - COMP=nss OS_TYPE=centos OS_VERSION=6
+        - COMP=nss OS_TYPE=centos OS_VERSION=7
+        - COMP=nss OS_TYPE=fedora OS_VERSION=24
+        # gnutls tests
+        - COMP=gnutls OS_TYPE=centos OS_VERSION=5
+        - COMP=gnutls OS_TYPE=centos OS_VERSION=6
+        - COMP=gnutls OS_TYPE=centos OS_VERSION=7
+        - COMP=gnutls OS_TYPE=fedora OS_VERSION=24
 
 services:
     - docker
