@@ -60,5 +60,5 @@ $(METADATA): Makefile
 	@echo "Confidential:    no" >> $(METADATA)
 	@echo "Destructive:     no" >> $(METADATA)
 	@echo "Bug:             1008542 1215760 1215764 1216063 1215751 1216909 1212106 1226800 1234993 1234997" >> $(METADATA)
-	@echo "Releases:        -RHEL4 -RHEL6 -RHELClient5 -RHELServer5" >> $(METADATA)
+	@echo "Releases:        -RHEL4 -RHEL6 -RHELClient5 -RHELServer5 -RHEL7" >> $(METADATA)
 
