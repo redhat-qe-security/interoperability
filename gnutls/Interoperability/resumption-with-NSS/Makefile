@@ -1,7 +1,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   Makefile of /CoreOS/nss/Interoperability/renego-and-resumption-NSS-with-OpenSSL
-#   Description: Verify that renegotiation and resumption between NSS and OpenSSL works
+#   Makefile of /CoreOS/gnutls/Interoperability/resumption-with-NSS
+#   Description: Verify that session resumption between GnuTLS and NSS works
 #   Author: Hubert Kario <hkario@redhat.com>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,12 +24,12 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-export TEST=/CoreOS/nss/Interoperability/renego-and-resumption-NSS-with-OpenSSL
+export TEST=/CoreOS/gnutls/Interoperability/resumption-with-NSS
 export TESTVERSION=1.0
 
 BUILT_FILES=
 
-FILES=$(METADATA) runtest.sh Makefile PURPOSE nss-client.expect
+FILES=$(METADATA) runtest.sh Makefile PURPOSE
 
 .PHONY: all install download clean
 
@@ -49,11 +49,11 @@ $(METADATA): Makefile
 	@echo "Name:            $(TEST)" >> $(METADATA)
 	@echo "TestVersion:     $(TESTVERSION)" >> $(METADATA)
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
-	@echo "Description:     Verify that renegotiation and resumption between NSS and OpenSSL works" >> $(METADATA)
+	@echo "Description:     Verify that session resumption between GnuTLS and NSS works" >> $(METADATA)
 	@echo "Type:            Interoperability" >> $(METADATA)
-	@echo "TestTime:        50m" >> $(METADATA)
-	@echo "RunFor:          nss openssl" >> $(METADATA)
-	@echo "Requires:        nss nss-tools openssl" >> $(METADATA)
+	@echo "TestTime:        10m" >> $(METADATA)
+	@echo "RunFor:          gnutls nss" >> $(METADATA)
+	@echo "Requires:        gnutls gnutls-utils nss nss-tools openssl" >> $(METADATA)
 	@echo "RhtsRequires:    library(openssl/certgen)" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)

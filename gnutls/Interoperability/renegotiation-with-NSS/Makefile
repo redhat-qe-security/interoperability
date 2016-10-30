@@ -1,7 +1,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#   Makefile of /CoreOS/nss/Interoperability/renego-and-resumption-NSS-with-OpenSSL
-#   Description: Verify that renegotiation and resumption between NSS and OpenSSL works
+#   Makefile of /CoreOS/gnutls/Interoperability/renegotiation-with-NSS
+#   Description: Test renegotiating the connection with NSS
 #   Author: Hubert Kario <hkario@redhat.com>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,7 +24,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-export TEST=/CoreOS/nss/Interoperability/renego-and-resumption-NSS-with-OpenSSL
+export TEST=/CoreOS/gnutls/Interoperability/renegotiation-with-NSS
 export TESTVERSION=1.0
 
 BUILT_FILES=
@@ -49,12 +49,11 @@ $(METADATA): Makefile
 	@echo "Name:            $(TEST)" >> $(METADATA)
 	@echo "TestVersion:     $(TESTVERSION)" >> $(METADATA)
 	@echo "Path:            $(TEST_DIR)" >> $(METADATA)
-	@echo "Description:     Verify that renegotiation and resumption between NSS and OpenSSL works" >> $(METADATA)
+	@echo "Description:     Test renegotiating the connection with NSS" >> $(METADATA)
 	@echo "Type:            Interoperability" >> $(METADATA)
-	@echo "TestTime:        50m" >> $(METADATA)
-	@echo "RunFor:          nss openssl" >> $(METADATA)
-	@echo "Requires:        nss nss-tools openssl" >> $(METADATA)
-	@echo "RhtsRequires:    library(openssl/certgen)" >> $(METADATA)
+	@echo "TestTime:        10m" >> $(METADATA)
+	@echo "RunFor:          gnutls nss" >> $(METADATA)
+	@echo "Requires:        gnutls gnutls-utils nss nss-tools expect" >> $(METADATA)
 	@echo "Priority:        Normal" >> $(METADATA)
 	@echo "License:         GPLv2" >> $(METADATA)
 	@echo "Confidential:    no" >> $(METADATA)
