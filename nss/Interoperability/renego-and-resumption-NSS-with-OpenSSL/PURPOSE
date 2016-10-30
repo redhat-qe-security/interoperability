@@ -1,0 +1,3 @@
+PURPOSE of /CoreOS/nss/Interoperability/renego-and-resumption-NSS-with-OpenSSL
+Description: Verify that renegotiation and resumption between NSS and OpenSSL works
+Author: Hubert Kario <hkario@redhat.com>
