@@ -24,16 +24,24 @@ fi
 OS_TYPE="$1"
 OS_VERSION="$2"
 COMPONENT="$3"
-
-fold_start "machine-setup"
-yum -y makecache
-# epel-release is not available on fedora
-if [[ $OS_TYPE != "fedora" ]]; then
-    yum -y install epel-release
+if [[ $OS_TYPE == "fedora" ]]; then
+    PKG_MAN="dnf"
+else
+    PKG_MAN="yum"
 fi
 
-yum -y install openssl nss gnutls net-tools coreutils gawk \
-               gnutls-utils expect make beakerlib findutils
+fold_start "machine-setup"
+$PKG_MAN -y makecache
+# Do a full system upgrade
+$PKG_MAN -y upgrade
+
+# epel-release is not available on fedora
+if [[ $OS_TYPE != "fedora" ]]; then
+    $PKG_MAN -y install epel-release
+fi
+
+# Install necessary packages/dependencies
+$PKG_MAN -y install net-tools coreutils gawk expect make beakerlib findutils
 
 EC=0
 SKIP=0
@@ -70,7 +78,7 @@ do
                     print m[1];
                 }' Makefile)"
             if [[ ! -z $DEPS ]]; then
-                yum -y install $DEPS
+                $PKG_MAN -y install $DEPS
             fi
             # Works only for beakerlib tests
             make run
