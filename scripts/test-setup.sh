@@ -28,6 +28,8 @@ echo "fipsLibraryLoaded() { return 0; }" >> "$LIB_PATH/lib.sh"
 RUNNER="/workspace/scripts/test-runner.sh"
 
 sudo docker run --rm --name "$CONT_NAME" \
+                --add-host localhost4:127.0.0.1 \
+                --add-host localhost6:::1 \
                 -v $PWD:/workspace:rw \
                 ${OS_TYPE}:${OS_VERSION} \
                 /bin/bash -c \
