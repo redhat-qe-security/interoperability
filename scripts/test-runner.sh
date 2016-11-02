@@ -14,6 +14,13 @@ function fold_end() {
     echo -en "travis_fold:end:$1\\r"
 }
 
+function keep_alive() {
+    while true; do
+        echo "[KEEPALIVE] $(date)"
+        sleep 300
+    done
+}
+
 set +x
 
 if [[ $# < 3 ]]; then
@@ -53,6 +60,7 @@ SKIPPED=()
 export PATH=${PATH}:/workspace/scripts
 
 fold_end "machine-setup"
+keep_alive &
 
 # Just beautiful
 for test in $(find /workspace -type f ! -path "*/Library/*" \

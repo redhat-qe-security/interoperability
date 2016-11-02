@@ -22,7 +22,6 @@ services:
     - docker
 
 before_install:
-    - sudo apt-get update
     - sudo docker pull ${OS_TYPE}:${OS_VERSION}
 
 script:
