@@ -31,6 +31,7 @@
 
 PACKAGE="openssl"
 PACKAGES="nss gnutls"
+GNUTLS_PRIO="NORMAL:+ARCFOUR-128:+DHE-DSS:+SIGN-DSA-SHA1:+SIGN-DSA-SHA224:+SIGN-DSA-SHA256"
 
 rlJournalStart
     rlPhaseStartSetup
@@ -544,7 +545,9 @@ rlJournalStart
             options=(gnutls-cli)
             options+=(--x509cafile $(x509Cert ca))
             if [[ $prot == tls1_1 ]]; then
-                options+=(--priority NORMAL:-VERS-TLS1.2)
+                options+=(--priority ${GNUTLS_PRIO}:-VERS-TLS1.2)
+            else
+                options+=(--priority ${GNUTLS_PRIO})
             fi
             options+=(-p 4433 localhost)
             rlRun -s "expect gnutls-client.expect ${options[*]}"
@@ -562,6 +565,7 @@ rlJournalStart
         rlPhaseStartTest "GnuTLS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol"
             rlRun "gnutls-serv --echo -p 4433 --x509keyfile ${C_KEY[$j]} \
                    --x509certfile <(cat ${C_CERT[$j]} ${C_SUBCA[$j]}) \
+                   --priority ${GNUTLS_PRIO} \
                    >server.log 2>server.err &"
             gnutls_pid=$!
             rlRun "rlWaitForSocket 4433 -p $gnutls_pid"
@@ -601,7 +605,9 @@ rlJournalStart
             options+=(--x509keyfile ${C_CLNT_KEY[$j]})
             options+=(--x509certfile ${C_CLNT_CERT[$j]})
             if [[ $prot == tls1_1 ]]; then
-                options+=(--priority NORMAL:-VERS-TLS1.2)
+                options+=(--priority ${GNUTLS_PRIO}:-VERS-TLS1.2)
+            else
+                options+=(--priority ${GNUTLS_PRIO})
             fi
             options+=(-p 4433 localhost)
             rlRun -s "expect gnutls-client.expect ${options[*]}"
@@ -621,6 +627,7 @@ rlJournalStart
                    --x509certfile <(cat ${C_CERT[$j]} ${C_SUBCA[$j]}) \
                    --x509cafile <(cat $(x509Cert ca) ${C_SUBCA[$j]}) \
                    --require-client-cert --verify-client-cert \
+                   --priority ${GNUTLS_PRIO} \
                    >server.log 2>server.err &"
             gnutls_pid=$!
             rlRun "rlWaitForSocket 4433 -p $gnutls_pid"
