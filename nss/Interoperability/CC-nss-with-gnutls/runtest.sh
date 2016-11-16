@@ -32,6 +32,7 @@
 PACKAGE="nss"
 PACKAGES="nss gnutls"
 
+GNUTLS_PRIO="NORMAL:+ARCFOUR-128:+DHE-DSS:+SIGN-DSA-SHA1:+SIGN-DSA-SHA224:+SIGN-DSA-SHA256"
 SERVER_UTIL="/usr/lib/nss/unsupported-tools/selfserv"
 CLIENT_UTIL="/usr/lib/nss/unsupported-tools/tstclnt"
 [ -f /usr/lib64/nss/unsupported-tools/selfserv ] && SERVER_UTIL="/usr/lib64/nss/unsupported-tools/selfserv"
@@ -545,6 +546,7 @@ rlJournalStart
         rlPhaseStartTest "GnuTLS server NSS client ${C_NAME[$j]} cipher $prot protocol"
             rlRun "gnutls-serv --http -p 4433 --x509keyfile ${C_KEY[$j]} \
                    --x509certfile <(cat ${C_CERT[$j]} ${C_SUBCA[$j]}) \
+                   --priority ${GNUTLS_PRIO} \
                    >server.log 2>server.err &"
             openssl_pid=$!
             rlRun "rlWaitForSocket 4433 -p $openssl_pid"
@@ -595,7 +597,9 @@ rlJournalStart
             options+=(--x509cafile $(x509Cert ca))
             options+=(-p 4433 localhost)
             if [[ $prot == "tls1_1" ]]; then
-                options+=(--priority NORMAL:-VERS-TLS1.2)
+                options+=(--priority ${GNUTLS_PRIO}:-VERS-TLS1.2)
+            else
+                options+=(--priority ${GNUTLS_PRIO})
             fi
             rlRun -s "expect gnutls-client.expect ${options[*]}"
             rlAssertGrep "GET / HTTP/1.0" $rlRun_LOG
@@ -625,7 +629,8 @@ rlJournalStart
             options+=(--x509certfile '<(cat ${C_CERT[$j]} ${C_SUBCA[$j]})')
             options+=(--x509cafile '<(cat $(x509Cert ca) ${C_SUBCA[$j]})')
             options+=(--require-client-cert --verify-client-cert)
-            rlRun "gnutls-serv ${options[*]} >server.log 2>server.err &"
+            rlRun "gnutls-serv --priority ${GNUTLS_PRIO} \
+                   ${options[*]} >server.log 2>server.err &"
             openssl_pid=$!
             rlRun "rlWaitForSocket 4433 -p $openssl_pid"
 
@@ -684,7 +689,9 @@ rlJournalStart
             options+=(--x509certfile ${C_CLNT_CERT[$j]})
             options+=(--x509keyfile ${C_CLNT_KEY[$j]})
             if [[ $prot == tls1_1 ]]; then
-                options+=(--priority NORMAL:-VERS-TLS1.2)
+                options+=(--priority ${GNUTLS_PRIO}:-VERS-TLS1.2)
+            else
+                options+=(--priority ${GNUTLS_PRIO})
             fi
             rlRun -s "expect gnutls-client.expect ${options[*]}"
             rlAssertGrep "GET / HTTP/1.0" $rlRun_LOG

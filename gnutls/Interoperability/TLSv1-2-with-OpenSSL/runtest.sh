@@ -31,6 +31,7 @@
 
 PACKAGE="gnutls"
 PACKAGES="openssl gnutls"
+GNUTLS_PRIO="NORMAL:+ARCFOUR-128:+DHE-DSS:+SIGN-DSA-SHA1:+SIGN-DSA-SHA224:+SIGN-DSA-SHA256"
 
 rlJournalStart
     rlPhaseStartSetup
@@ -379,10 +380,10 @@ rlJournalStart
             options=(gnutls-cli)
             options+=(--x509cafile $(x509Cert ca))
             if [[ $prot == tls1_2 ]]; then
-                options+=(--priority NORMAL:+VERS-TLS1.2)
+                options+=(--priority ${GNUTLS_PRIO}:+VERS-TLS1.2)
             fi
             if [[ $prot == tls1_1 ]]; then
-                options+=(--priority NORMAL:-VERS-TLS1.2)
+                options+=(--priority ${GNUTLS_PRIO}:-VERS-TLS1.2)
             fi
             options+=(-p 4433 localhost)
             rlRun -s "expect gnutls-client.expect ${options[*]}"
@@ -403,7 +404,7 @@ rlJournalStart
 
         rlPhaseStartTest "GnuTLS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol"
             options=(gnutls-serv --echo -p 4433)
-            options+=(--priority NORMAL:+VERS-TLS1.2)
+            options+=(--priority ${GNUTLS_PRIO}:+VERS-TLS1.2)
             options+=(--x509keyfile ${C_KEY[$j]})
             options+=(--x509certfile "<(cat ${C_CERT[$j]} ${C_SUBCA[$j]})")
             options+=(">server.log" "2>server.err" "&")
@@ -451,10 +452,10 @@ rlJournalStart
             options+=(--x509keyfile ${C_CLNT_KEY[$j]})
             options+=(--x509certfile ${C_CLNT_CERT[$j]})
             if [[ $prot == tls1_2 ]]; then
-                options+=(--priority NORMAL:+VERS-TLS1.2)
+                options+=(--priority ${GNUTLS_PRIO}:+VERS-TLS1.2)
             fi
             if [[ $prot == tls1_1 ]]; then
-                options+=(--priority NORMAL:-VERS-TLS1.2)
+                options+=(--priority ${GNUTLS_PRIO}:-VERS-TLS1.2)
             fi
             options+=(-p 4433 localhost)
             rlRun -s "expect gnutls-client.expect ${options[*]}"
@@ -475,7 +476,7 @@ rlJournalStart
 
         rlPhaseStartTest "GnuTLS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol client cert"
             options=(gnutls-serv --echo -p 4433)
-            options+=(--priority NORMAL:+VERS-TLS1.2)
+            options+=(--priority ${GNUTLS_PRIO}:+VERS-TLS1.2)
             options+=(--x509keyfile ${C_KEY[$j]})
             options+=(--x509certfile "<(cat ${C_CERT[$j]} ${C_SUBCA[$j]})")
             options+=(--x509cafile "<(cat $(x509Cert ca) ${C_SUBCA[$j]})")
