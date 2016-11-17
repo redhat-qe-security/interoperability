@@ -48,7 +48,8 @@ if [[ $OS_TYPE != "fedora" ]]; then
 fi
 
 # Install necessary packages/dependencies
-$PKG_MAN -y install net-tools coreutils gawk expect make beakerlib findutils
+$PKG_MAN -y install net-tools coreutils gawk expect make beakerlib findutils \
+                    procps-ng
 
 EC=0
 SKIP=0
