@@ -11,7 +11,8 @@ env:
         - COMP=nss OS_TYPE=centos OS_VERSION=5
         - COMP=nss OS_TYPE=centos OS_VERSION=6
         - COMP=nss OS_TYPE=centos OS_VERSION=7
-        - COMP=nss OS_TYPE=fedora OS_VERSION=24
+        - COMP=nss OS_TYPE=fedora OS_VERSION=24 TEST_GLOB='@(renego*)'
+        - COMP=nss OS_TYPE=fedora OS_VERSION=24 TEST_GLOB='!(renego*)'
         # gnutls tests
         - COMP=gnutls OS_TYPE=centos OS_VERSION=5
         - COMP=gnutls OS_TYPE=centos OS_VERSION=6
@@ -25,4 +26,4 @@ before_install:
     - sudo docker pull ${OS_TYPE}:${OS_VERSION}
 
 script:
-    - ./scripts/test-setup.sh ${OS_TYPE} ${OS_VERSION} ${COMP}
+    - ./scripts/test-setup.sh ${OS_TYPE} ${OS_VERSION} ${COMP} "${TEST_GLOB}"
