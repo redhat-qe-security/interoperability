@@ -80,3 +80,4 @@ _EOF
     rlPhaseEnd
 rlJournalPrintText
 rlJournalEnd
+rlGetTestState

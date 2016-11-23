@@ -8,6 +8,7 @@ fi
 OS_TYPE="$1"
 OS_VERSION="$2"
 COMPONENT="$3"
+TEST_GLOB="$4"
 CONT_NAME="${OS_TYPE}-${OS_VERSION}-${COMPONENT}"
 CERTGEN_REPO="https://github.com/redhat-qe-security/certgen"
 CERTGEN_PATH="openssl/Library/certgen"
@@ -50,4 +51,4 @@ sudo docker run --rm --name "$CONT_NAME" \
                 -v $PWD:/workspace:rw \
                 ${OS_TYPE}:${OS_VERSION} \
                 /bin/bash -c \
-                "bash -x $RUNNER $OS_TYPE $OS_VERSION $COMPONENT"
+                "bash -x $RUNNER $OS_TYPE $OS_VERSION $COMPONENT '$TEST_GLOB'"
