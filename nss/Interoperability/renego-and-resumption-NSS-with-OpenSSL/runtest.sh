@@ -343,6 +343,46 @@ rlJournalStart
             continue
         fi
 
+        rlPhaseStartTest "OpenSSL server NSS client ${C_NAME[$j]} cipher $prot protocol client auth renegotiation"
+            rlLogInfo "Preparing NSS database"
+            rlRun "mkdir nssdb/"
+            rlRun "certutil -N --empty-password -d sql:./nssdb/"
+            rlRun "certutil -A -d sql:./nssdb/ -n ca -t 'cC,,' -a -i $(x509Cert ca)"
+            rlRun "certutil -A -d sql:./nssdb/ -n subca -t ',,' -a -i ${C_SUBCA[$j]}"
+            clnt_nickname="${C_CLNT_KEY[$j]%%/*}"
+            rlRun "pk12util -i $(x509Key --pkcs12 --with-cert $clnt_nickname) -d sql:./nssdb -W ''"
+
+            rlLogInfo "Test proper"
+            options=(openssl s_server -www -key ${C_KEY[$j]})
+            options+=(-cert ${C_CERT[$j]})
+            options+=(-CAfile '<(cat $(x509Cert ca) ${C_SUBCA[$j]})')
+            options+=(-cipher ${C_OPENSSL[$j]})
+            options+=(-Verify 1 -verify_return_error)
+            rlRun "${options[*]} >server.log 2>server.err &"
+            openssl_pid=$!
+            rlRun "rlWaitForSocket 4433 -p $openssl_pid"
+            options=(${CLIENT_UTIL})
+            options+=(-h localhost -p 4433)
+            options+=(-d sql:./nssdb/)
+            options+=(-c :${C_ID[$j]})
+            options+=(-r 1)
+            if [[ $prot == "tls1_2" ]]; then
+                options+=(-V tls1.0:)
+            else
+                options+=(-V tls1.0:tls1.1)
+            fi
+            options+=(-n $clnt_nickname)
+            rlRun -s "expect nss-client.expect ${options[*]}"
+            rlAssertGrep "New, TLSv1/SSLv3," "$rlRun_LOG"
+            rlRun "kill $openssl_pid"
+            rlRun "rlWait -s SIGKILL $openssl_pid" 143
+            if ! rlGetPhaseState; then
+                rlRun "cat server.log" 0 "Server stdout"
+                rlRun "cat server.err" 0 "Server stderr"
+            fi
+            rlRun "rm -rf nssdb/"
+        rlPhaseEnd
+
         rlPhaseStartTest "OpenSSL server NSS client ${C_NAME[$j]} cipher $prot protocol renegotiation"
             options=(openssl s_server -www -key ${C_KEY[$j]})
             options+=(-cert ${C_CERT[$j]})
@@ -410,87 +450,6 @@ rlJournalStart
         rlPhaseEnd
       done
 
-        rlPhaseStartTest "NSS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol"
-            rlLogInfo "Preparing NSS database"
-            rlRun "mkdir nssdb/"
-            rlRun "certutil -N --empty-password -d sql:./nssdb/"
-            rlRun "certutil -A -d sql:./nssdb/ -n ca -t 'cC,,' -a -i $(x509Cert ca)"
-            rlRun "certutil -A -d sql:./nssdb/ -n subca -t ',,' -a -i ${C_SUBCA[$j]}"
-            rlRun "pk12util -i $(x509Key --pkcs12 --with-cert ${C_KEY[$j]%%/*}) -d sql:./nssdb -W ''"
-
-            rlLogInfo "Test proper"
-            declare -a options=()
-            options+=(${SERVER_UTIL} -d sql:./nssdb/ -p 4433 -V tls1.0:
-                      -c :${C_ID[$j]} -H 1)
-            if [[ ${C_KEY[$j]} =~ 'ecdsa' ]]; then
-                options+=(-e ${C_KEY[$j]%%/*})
-            elif [[ ${C_KEY[$j]} =~ 'dsa' ]]; then
-                options+=(-S ${C_KEY[$j]%%/*})
-            else
-                options+=(-n ${C_KEY[$j]%%/*})
-            fi
-            rlRun "expect nss-server.expect ${options[*]} >server.log 2>server.err &"
-            nss_pid=$!
-            rlRun "rlWaitForSocket 4433 -p $nss_pid"
-            options=(openssl s_client)
-            options+=(-CAfile $(x509Cert ca))
-            options+=(-cipher ${C_OPENSSL[$j]})
-            options+=(-connect localhost:4433)
-            if [[ $prot == "tls1_1" ]]; then
-                options+=(-tls1_1)
-            fi
-            rlRun -s "expect openssl-client.expect ${options[*]}"
-            rlRun "kill $nss_pid"
-            rlRun "rlWait -s SIGKILL $nss_pid" 143
-            rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
-            rlAssertGrep "Server: Generic Web Server" "$rlRun_LOG"
-            if ! rlGetPhaseState; then
-                rlRun "cat server.log" 0 "Server stdout"
-                rlRun "cat server.err" 0 "Server stderr"
-            fi
-            rlRun "rm -rf nssdb/" 0 "Clean up NSS database"
-        rlPhaseEnd
-
-        rlPhaseStartTest "OpenSSL server NSS client ${C_NAME[$j]} cipher $prot protocol client auth renegotiation"
-            rlLogInfo "Preparing NSS database"
-            rlRun "mkdir nssdb/"
-            rlRun "certutil -N --empty-password -d sql:./nssdb/"
-            rlRun "certutil -A -d sql:./nssdb/ -n ca -t 'cC,,' -a -i $(x509Cert ca)"
-            rlRun "certutil -A -d sql:./nssdb/ -n subca -t ',,' -a -i ${C_SUBCA[$j]}"
-            clnt_nickname="${C_CLNT_KEY[$j]%%/*}"
-            rlRun "pk12util -i $(x509Key --pkcs12 --with-cert $clnt_nickname) -d sql:./nssdb -W ''"
-
-            rlLogInfo "Test proper"
-            options=(openssl s_server -www -key ${C_KEY[$j]})
-            options+=(-cert ${C_CERT[$j]})
-            options+=(-CAfile '<(cat $(x509Cert ca) ${C_SUBCA[$j]})')
-            options+=(-cipher ${C_OPENSSL[$j]})
-            options+=(-Verify 1 -verify_return_error)
-            rlRun "${options[*]} >server.log 2>server.err &"
-            openssl_pid=$!
-            rlRun "rlWaitForSocket 4433 -p $openssl_pid"
-            options=(${CLIENT_UTIL})
-            options+=(-h localhost -p 4433)
-            options+=(-d sql:./nssdb/)
-            options+=(-c :${C_ID[$j]})
-            options+=(-r 1)
-            if [[ $prot == "tls1_2" ]]; then
-                options+=(-V tls1.0:)
-            else
-                options+=(-V tls1.0:tls1.1)
-            fi
-            options+=(-n $clnt_nickname)
-            rlRun -s "expect nss-client.expect ${options[*]}"
-            rlAssertGrep "New, TLSv1/SSLv3," "$rlRun_LOG"
-            rlRun "kill $openssl_pid"
-            rlRun "rlWait -s SIGKILL $openssl_pid" 143
-            if ! rlGetPhaseState; then
-                rlRun "cat server.log" 0 "Server stdout"
-                rlRun "cat server.err" 0 "Server stderr"
-            fi
-            rlRun "rm -rf nssdb/"
-        rlPhaseEnd
-
     # looks like strsclnt can't handle client certificates with OpenSSL
     if false; then
       for sess in sessionID ticket; do
@@ -544,6 +503,89 @@ rlJournalStart
         rlPhaseEnd
       done
     fi
+
+        rlPhaseStartTest "NSS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol"
+            rlLogInfo "Preparing NSS database"
+            rlRun "mkdir nssdb/"
+            rlRun "certutil -N --empty-password -d sql:./nssdb/"
+            rlRun "certutil -A -d sql:./nssdb/ -n ca -t 'cC,,' -a -i $(x509Cert ca)"
+            rlRun "certutil -A -d sql:./nssdb/ -n subca -t ',,' -a -i ${C_SUBCA[$j]}"
+            rlRun "pk12util -i $(x509Key --pkcs12 --with-cert ${C_KEY[$j]%%/*}) -d sql:./nssdb -W ''"
+
+            rlLogInfo "Test proper"
+            declare -a options=()
+            options+=(${SERVER_UTIL} -d sql:./nssdb/ -p 4433 -V tls1.0:
+                      -c :${C_ID[$j]} -H 1)
+            if [[ ${C_KEY[$j]} =~ 'ecdsa' ]]; then
+                options+=(-e ${C_KEY[$j]%%/*})
+            elif [[ ${C_KEY[$j]} =~ 'dsa' ]]; then
+                options+=(-S ${C_KEY[$j]%%/*})
+            else
+                options+=(-n ${C_KEY[$j]%%/*})
+            fi
+            rlRun "expect nss-server.expect ${options[*]} >server.log 2>server.err &"
+            nss_pid=$!
+            rlRun "rlWaitForSocket 4433 -p $nss_pid"
+            options=(openssl s_client)
+            options+=(-CAfile $(x509Cert ca))
+            options+=(-cipher ${C_OPENSSL[$j]})
+            options+=(-connect localhost:4433)
+            if [[ $prot == "tls1_1" ]]; then
+                options+=(-tls1_1)
+            fi
+            rlRun -s "expect openssl-client.expect ${options[*]}"
+            rlRun "kill $nss_pid"
+            rlRun "rlWait -s SIGKILL $nss_pid" 143
+            rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
+            rlAssertGrep "Server: Generic Web Server" "$rlRun_LOG"
+            if ! rlGetPhaseState; then
+                rlRun "cat server.log" 0 "Server stdout"
+                rlRun "cat server.err" 0 "Server stderr"
+            fi
+            rlRun "rm -rf nssdb/" 0 "Clean up NSS database"
+        rlPhaseEnd
+
+        rlPhaseStartTest "NSS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol client auth"
+            rlLogInfo "Preparing NSS database"
+            rlRun "mkdir nssdb/"
+            rlRun "certutil -N --empty-password -d sql:./nssdb/"
+            rlRun "certutil -A -d sql:./nssdb/ -n ca -t 'cCT,,' -a -i $(x509Cert ca)"
+            rlRun "certutil -A -d sql:./nssdb/ -n subca -t ',,' -a -i ${C_SUBCA[$j]}"
+            rlRun "pk12util -i $(x509Key --pkcs12 --with-cert ${C_KEY[$j]%%/*}) -d sql:./nssdb -W ''"
+
+            rlLogInfo "Test proper"
+            declare -a options=()
+            options+=(${SERVER_UTIL} -d sql:./nssdb/ -p 4433 -V tls1.0: -rr
+                      -c :${C_ID[$j]} -H 1)
+            if [[ ${C_KEY[$j]} =~ 'ecdsa' ]]; then
+                options+=(-e ${C_KEY[$j]%%/*})
+            elif [[ ${C_KEY[$j]} =~ 'dsa' ]]; then
+                options+=(-S ${C_KEY[$j]%%/*})
+            else
+                options+=(-n ${C_KEY[$j]%%/*})
+            fi
+            rlRun "expect nss-server.expect ${options[*]} >server.log 2>server.err &"
+            nss_pid=$!
+            rlRun "rlWaitForSocket 4433 -p $nss_pid"
+            options=(openssl s_client)
+            options+=(-CAfile $(x509Cert ca))
+            options+=(-cipher ${C_OPENSSL[$j]})
+            options+=(-connect localhost:4433)
+            options+=(-cert ${C_CLNT_CERT[$j]} -key ${C_CLNT_KEY[$j]})
+            if [[ $prot == "tls1_1" ]]; then
+                options+=(-tls1_1)
+            fi
+            rlRun -s "expect openssl-client.expect ${options[*]}"
+            rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
+            rlAssertGrep "Server: Generic Web Server" "$rlRun_LOG"
+            rlRun "kill $nss_pid"
+            rlRun "rlWait -s SIGKILL $nss_pid" 143
+            if ! rlGetPhaseState; then
+                rlRun "cat server.log" 0 "Server stdout"
+                rlRun "cat server.err" 0 "Server stderr"
+            fi
+            rlRun "rm -rf nssdb/" 0 "Clean up NSS database"
+        rlPhaseEnd
 
         rlPhaseStartTest "NSS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol renegotiation"
             rlLogInfo "Preparing NSS database"
@@ -731,47 +773,6 @@ rlJournalStart
         rlPhaseEnd
     done
 
-        rlPhaseStartTest "NSS server OpenSSL client ${C_NAME[$j]} cipher $prot protocol client auth"
-            rlLogInfo "Preparing NSS database"
-            rlRun "mkdir nssdb/"
-            rlRun "certutil -N --empty-password -d sql:./nssdb/"
-            rlRun "certutil -A -d sql:./nssdb/ -n ca -t 'cCT,,' -a -i $(x509Cert ca)"
-            rlRun "certutil -A -d sql:./nssdb/ -n subca -t ',,' -a -i ${C_SUBCA[$j]}"
-            rlRun "pk12util -i $(x509Key --pkcs12 --with-cert ${C_KEY[$j]%%/*}) -d sql:./nssdb -W ''"
-
-            rlLogInfo "Test proper"
-            declare -a options=()
-            options+=(${SERVER_UTIL} -d sql:./nssdb/ -p 4433 -V tls1.0: -rr
-                      -c :${C_ID[$j]} -H 1)
-            if [[ ${C_KEY[$j]} =~ 'ecdsa' ]]; then
-                options+=(-e ${C_KEY[$j]%%/*})
-            elif [[ ${C_KEY[$j]} =~ 'dsa' ]]; then
-                options+=(-S ${C_KEY[$j]%%/*})
-            else
-                options+=(-n ${C_KEY[$j]%%/*})
-            fi
-            rlRun "expect nss-server.expect ${options[*]} >server.log 2>server.err &"
-            nss_pid=$!
-            rlRun "rlWaitForSocket 4433 -p $nss_pid"
-            options=(openssl s_client)
-            options+=(-CAfile $(x509Cert ca))
-            options+=(-cipher ${C_OPENSSL[$j]})
-            options+=(-connect localhost:4433)
-            options+=(-cert ${C_CLNT_CERT[$j]} -key ${C_CLNT_KEY[$j]})
-            if [[ $prot == "tls1_1" ]]; then
-                options+=(-tls1_1)
-            fi
-            rlRun -s "expect openssl-client.expect ${options[*]}"
-            rlAssertGrep "GET / HTTP/1.0" "$rlRun_LOG"
-            rlAssertGrep "Server: Generic Web Server" "$rlRun_LOG"
-            rlRun "kill $nss_pid"
-            rlRun "rlWait -s SIGKILL $nss_pid" 143
-            if ! rlGetPhaseState; then
-                rlRun "cat server.log" 0 "Server stdout"
-                rlRun "cat server.err" 0 "Server stderr"
-            fi
-            rlRun "rm -rf nssdb/" 0 "Clean up NSS database"
-        rlPhaseEnd
       done
     done
 
