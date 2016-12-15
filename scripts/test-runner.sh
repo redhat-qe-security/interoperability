@@ -72,6 +72,11 @@ fi
 $PKG_MAN -y install net-tools coreutils gawk expect make beakerlib findutils \
                     procps-ng
 
+# WORKAROUND: Replace all rlIsRHEL calls with rlIsCentos
+if [[ $OS_TYPE == "centos" ]]; then
+    echo 'rlIsRHEL() { rlIsCentOS "$@"; }' >> /usr/share/beakerlib/testing.sh
+fi
+
 EC=0
 SKIP=0
 INDEX=0
