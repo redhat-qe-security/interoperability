@@ -360,7 +360,7 @@ rlJournalStart
             else
                 options+=(-V tls1.0:tls1.1)
             fi
-            rlRun -s "${options[*]} <<< 'GET /'"
+            rlRun -s "${options[*]} <<< 'GET / HTTP/1.0\n\n'"
             rlAssertGrep "New, TLSv1/SSLv3," "$rlRun_LOG"
             rlRun "kill $openssl_pid"
             rlRun "rlWait -s SIGKILL $openssl_pid" 143
@@ -398,7 +398,7 @@ rlJournalStart
                 options+=(-V tls1.0:tls1.1)
             fi
             options+=(-n $clnt_nickname)
-            rlRun -s "${options[*]} <<< 'GET /'"
+            rlRun -s "${options[*]} <<< 'GET / HTTP/1.0\n\n'"
             rlAssertGrep "New, TLSv1/SSLv3," "$rlRun_LOG"
             rlRun "kill $openssl_pid"
             rlRun "rlWait -s SIGKILL $openssl_pid" 143
