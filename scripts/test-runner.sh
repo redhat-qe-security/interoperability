@@ -26,10 +26,17 @@ function keep_alive() {
 # $2 - glob pattern
 function test_name_relevancy() {
     # See: http://wiki.bash-hackers.org/syntax/pattern#extended_pattern_language
+    # Save the original state
+    shopt -q extglob
+    local STATE=$?
+    # Enable extglob
     shopt -s extglob
     [[ $1 == $2 ]]
     local RES=$?
-    shopt -u extglob
+    # If the extension was originally disabled, disable it
+    if [[ $STATE -ne 0 ]]; then
+        shopt -u extglob
+    fi
 
     return $RES
 }
