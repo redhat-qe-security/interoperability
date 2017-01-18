@@ -6,18 +6,18 @@ env:
         #- COMP=openssl OS_TYPE=centos OS_VERSION=5
         - COMP=openssl OS_TYPE=centos OS_VERSION=6
         - COMP=openssl OS_TYPE=centos OS_VERSION=7
-        - COMP=openssl OS_TYPE=fedora OS_VERSION=24
+        - COMP=openssl OS_TYPE=fedora OS_VERSION=latest
         # nss tests
         #- COMP=nss OS_TYPE=centos OS_VERSION=5
         - COMP=nss OS_TYPE=centos OS_VERSION=6
         - COMP=nss OS_TYPE=centos OS_VERSION=7
-        - COMP=nss OS_TYPE=fedora OS_VERSION=24 TEST_GLOB='@(renego*)'
-        - COMP=nss OS_TYPE=fedora OS_VERSION=24 TEST_GLOB='!(renego*)'
+        - COMP=nss OS_TYPE=fedora OS_VERSION=latest TEST_GLOB='@(renego*)'
+        - COMP=nss OS_TYPE=fedora OS_VERSION=latest TEST_GLOB='!(renego*)'
         # gnutls tests
         #- COMP=gnutls OS_TYPE=centos OS_VERSION=5
         - COMP=gnutls OS_TYPE=centos OS_VERSION=6
         - COMP=gnutls OS_TYPE=centos OS_VERSION=7
-        - COMP=gnutls OS_TYPE=fedora OS_VERSION=24
+        - COMP=gnutls OS_TYPE=fedora OS_VERSION=latest
 
 services:
     - docker

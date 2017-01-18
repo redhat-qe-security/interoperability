@@ -52,6 +52,18 @@ OS_TYPE="$1"
 OS_VERSION="$2"
 COMPONENT="$3"
 TEST_GLOB="$4"
+
+# As the $OS_VERSION is used for relevancy, we need to replace the 'latest'
+# version tag with the actual OS version
+# So far the 'latest' tag is used only for Fedora
+if [[ $OS_VERSION == "latest" ]]; then
+    OS_VERSION="$(awk '{ print $3; }' < /etc/fedora-release)"
+    if ! [[ $OS_VERSION =~ ^[0-9]+$ ]]; then
+        echo >&2 "FATAL: Couldn't determine OS version ($OS_VERSION)"
+        exit 1
+    fi
+fi
+
 if [[ $OS_TYPE == "fedora" ]]; then
     PKG_MAN="dnf"
 else
