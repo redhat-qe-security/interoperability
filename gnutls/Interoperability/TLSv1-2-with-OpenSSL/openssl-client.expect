@@ -6,8 +6,10 @@ expect {
         send "client hello\r"
         expect "client hello" {
             expect "client hello" {
-                close
-                exit 0
+                expect -re ".+" {
+                    close
+                    exit 0
+                }
             }
         }
     }
