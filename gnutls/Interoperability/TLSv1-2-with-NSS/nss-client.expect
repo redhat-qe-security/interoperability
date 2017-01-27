@@ -4,9 +4,18 @@ spawn /bin/sh -c "$argv"
 expect {
     "Enter Password" { send "RedHatEnterpriseLinux6.6\r"; exp_continue }
     eof { }
-    "subject DN" { send "GET / HTTP/1.0\r\r"; 
-                   expect -timeout 5 "HTTP/1.0 200 OK" { close; exit 0}
-                   close; exit 1}
+    "subject DN" {
+        send "GET / HTTP/1.0\r\r";
+        expect -timeout 5 "HTTP/1.0 200 OK" {
+            expect -re ".+" {
+                close;
+                exit 0;
+            }
+        }
+
+        close;
+        exit 1;
+    }
 }
 set info [wait]
 #puts "Return from wait: $info"

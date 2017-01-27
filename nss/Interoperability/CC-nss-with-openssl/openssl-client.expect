@@ -5,8 +5,10 @@ expect {
     "Verify return code: 0 " {
         send "GET / HTTP/1.0\r\r"
         expect "Server: Generic Web Server" {
-            close
-            exit 0
+            expect -re ".+" {
+                close
+                exit 0
+            }
         }
     }
 }
