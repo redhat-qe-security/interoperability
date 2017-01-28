@@ -8,9 +8,27 @@ fi
 OS_TYPE="$1"
 OS_VERSION="$2"
 COMPONENT="$3"
+TEST_GLOB="$4"
 CONT_NAME="${OS_TYPE}-${OS_VERSION}-${COMPONENT}"
 CERTGEN_REPO="https://github.com/redhat-qe-security/certgen"
 CERTGEN_PATH="openssl/Library/certgen"
+
+# Test sanity check
+# Check if all tests have rlGetTestState at their end
+FAILED_CHECKS=0
+FAILED_NAMES=()
+while read file; do
+    if ! grep -Pzoq "rlGetTestState[[:space:]]*$" "$file"; then
+        FAILED_CHECKS=$(($FAILED_CHECKS+1))
+        FAILED_NAMES+=("$file")
+    fi
+done <<< "$(find . -type f -name "runtest.sh")"
+
+if [[ $FAILED_CHECKS -gt 0 ]]; then
+    echo "Following tests are missing rlGetTestState command:"
+    printf '%s\n' "${FAILED_NAMES[@]}"
+    exit 1
+fi
 
 # Prepare necessary libraries
 # openssl/certgen:
@@ -33,4 +51,4 @@ sudo docker run --rm --name "$CONT_NAME" \
                 -v $PWD:/workspace:rw \
                 ${OS_TYPE}:${OS_VERSION} \
                 /bin/bash -c \
-                "bash -x $RUNNER $OS_TYPE $OS_VERSION $COMPONENT"
+                "bash -x $RUNNER $OS_TYPE $OS_VERSION $COMPONENT '$TEST_GLOB'"

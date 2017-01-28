@@ -6,8 +6,9 @@ expect {
         send "GET / HTTP/1.0\r\r";
         expect {
             "Generic Web Server" {
-                    close
-                    exit 0
+                sleep 1
+                close
+                exit 0
             }
         }
     }

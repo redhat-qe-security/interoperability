@@ -21,6 +21,26 @@ function keep_alive() {
     done
 }
 
+# Compare test name with glob expression using extended glob patterns
+# $1 - test name
+# $2 - glob pattern
+function test_name_relevancy() {
+    # See: http://wiki.bash-hackers.org/syntax/pattern#extended_pattern_language
+    # Save the original state
+    shopt -q extglob
+    local STATE=$?
+    # Enable extglob
+    shopt -s extglob
+    [[ $1 == $2 ]]
+    local RES=$?
+    # If the extension was originally disabled, disable it
+    if [[ $STATE -ne 0 ]]; then
+        shopt -u extglob
+    fi
+
+    return $RES
+}
+
 set +x
 
 if [[ $# < 3 ]]; then
@@ -31,6 +51,7 @@ fi
 OS_TYPE="$1"
 OS_VERSION="$2"
 COMPONENT="$3"
+TEST_GLOB="$4"
 if [[ $OS_TYPE == "fedora" ]]; then
     PKG_MAN="dnf"
 else
@@ -72,12 +93,26 @@ do
     SKIP=0
 
     echo "Running test: $test"
+
+    # Check if glob pattern is set
+    if [[ ! -z "$TEST_GLOB" ]]; then
+        # If so, check if it matches current test name
+        TEST_NAME="$(basename $(dirname "$test"))"
+        if ! test_name_relevancy "$TEST_NAME" "$TEST_GLOB"; then
+            echo "Test '$TEST_NAME' excluded by given glob expression: $TEST_GLOB"
+            SKIPPED+=("$test")
+            continue
+        fi
+    fi
+
+    # Makefile is necessary for test execution
     pushd "$(dirname "$test")"
     if [[ ! -f Makefile ]]; then
         echo >&2 "Missing Makefile"
         EC=1
         SKIP=1
     fi
+
     if [[ $SKIP -eq 0 ]]; then
         # Check relevancy
         if relevancy.awk -v os_type=$OS_TYPE -v os_ver=$OS_VERSION Makefile; then
