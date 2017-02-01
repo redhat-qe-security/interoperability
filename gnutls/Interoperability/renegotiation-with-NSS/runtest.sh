@@ -372,8 +372,10 @@ rlJournalStart
                 rlAssertNotGrep "failure" $rlRun_LOG -i
                 rlRun "kill $nss_pid" 0,1
                 rlRun "rlWait $nss_pid" 143
-                rlRun "cat server.log"
-                rlRun "cat server.err"
+                if ! rlGetPhaseState; then
+                    rlRun "cat server.log"
+                    rlRun "cat server.err"
+                fi
                 rlRun "rm -fr nssdb/"
             rlPhaseEnd
 
@@ -414,8 +416,10 @@ rlJournalStart
                 rlAssertNotGrep "failure" $rlRun_LOG -i
                 rlRun "kill $nss_pid" 0,1
                 rlRun "rlWait $nss_pid" 143
-                rlRun "cat server.log"
-                rlRun "cat server.err"
+                if ! rlGetPhaseState; then
+                    rlRun "cat server.log"
+                    rlRun "cat server.err"
+                fi
                 rlRun "rm -fr nssdb/"
             rlPhaseEnd
 
@@ -443,8 +447,10 @@ rlJournalStart
                 rlAssertGrep "$proto_match" $rlRun_LOG -i
                 rlRun "kill $gnutls_pid" 0,1
                 rlRun "rlWait $gnutls_pid" 143,1
-                rlRun "cat server.log"
-                rlRun "cat server.err"
+                if ! rlGetPhaseState; then
+                    rlRun "cat server.log"
+                    rlRun "cat server.err"
+                fi
             rlPhaseEnd
 
             rlPhaseStartTest "GNUTLS <-> NSS [${C_NAME[$idx]}, $proto, client auth]"
@@ -482,8 +488,10 @@ rlJournalStart
                 rlAssertGrep "$proto_match" $rlRun_LOG -i
                 rlRun "kill $gnutls_pid" 0,1
                 rlRun "rlWait $gnutls_pid" 143,1
-                rlRun "cat server.log"
-                rlRun "cat server.err"
+                if ! rlGetPhaseState; then
+                    rlRun "cat server.log"
+                    rlRun "cat server.err"
+                fi
                 rlRun "rm -fr nssdb"
             rlPhaseEnd
 
