@@ -336,6 +336,10 @@ rlJournalStart
                 rlAssertNotGrep "failure" $rlRun_LOG -i
                 rlRun "kill $openssl_pid" 0,1
                 rlRun "rlWait $openssl_pid" 143
+                if ! rlGetPhaseState; then
+                    rlRun "cat server.log"
+                    rlRun "cat server.err"
+                fi
             rlPhaseEnd
 
             rlPhaseStartTest "OpenSSL <-> GNUTLS [${C_NAME[$idx]}, $proto, client auth]"
@@ -365,6 +369,10 @@ rlJournalStart
                 rlAssertNotGrep "failure" $rlRun_LOG -i
                 rlRun "kill $openssl_pid" 0,1
                 rlRun "rlWait $openssl_pid" 143
+                if ! rlGetPhaseState; then
+                    rlRun "cat server.log"
+                    rlRun "cat server.err"
+                fi
             rlPhaseEnd
 
             rlPhaseStartTest "GNUTLS <-> OpenSSL [${C_NAME[$idx]}, $proto]"
@@ -388,6 +396,10 @@ rlJournalStart
                 rlRun "grep -A 10 RENEGOTIATING $rlRun_LOG | grep 'verify return:1'"
                 rlRun "kill $gnutls_pid" 0,1
                 rlRun "rlWait $gnutls_pid" 1,143
+                if ! rlGetPhaseState; then
+                    rlRun "cat server.log"
+                    rlRun "cat server.err"
+                fi
             rlPhaseEnd
 
             rlPhaseStartTest "GNUTLS <-> OpenSSL [${C_NAME[$idx]}, $proto, client auth]"
@@ -414,6 +426,10 @@ rlJournalStart
                 rlRun "grep -A 10 RENEGOTIATING $rlRun_LOG | grep 'verify return:1'"
                 rlRun "kill $gnutls_pid" 0,1
                 rlRun "rlWait $gnutls_pid" 1,143
+                if ! rlGetPhaseState; then
+                    rlRun "cat server.log"
+                    rlRun "cat server.err"
+                fi
             rlPhaseEnd
         done
     done
