@@ -6,6 +6,7 @@ expect {
         send "client hello\r"
         expect {
             "server hello" {
+                    sleep 1
                     close
                     exit 0
             }

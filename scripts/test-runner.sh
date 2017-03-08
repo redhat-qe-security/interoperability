@@ -21,6 +21,26 @@ function keep_alive() {
     done
 }
 
+# Compare test name with glob expression using extended glob patterns
+# $1 - test name
+# $2 - glob pattern
+function test_name_relevancy() {
+    # See: http://wiki.bash-hackers.org/syntax/pattern#extended_pattern_language
+    # Save the original state
+    shopt -q extglob
+    local STATE=$?
+    # Enable extglob
+    shopt -s extglob
+    [[ $1 == $2 ]]
+    local RES=$?
+    # If the extension was originally disabled, disable it
+    if [[ $STATE -ne 0 ]]; then
+        shopt -u extglob
+    fi
+
+    return $RES
+}
+
 set +x
 
 if [[ $# < 3 ]]; then
@@ -31,6 +51,19 @@ fi
 OS_TYPE="$1"
 OS_VERSION="$2"
 COMPONENT="$3"
+TEST_GLOB="$4"
+
+# As the $OS_VERSION is used for relevancy, we need to replace the 'latest'
+# version tag with the actual OS version
+# So far the 'latest' tag is used only for Fedora
+if [[ $OS_VERSION == "latest" ]]; then
+    OS_VERSION="$(awk '{ print $3; }' < /etc/fedora-release)"
+    if ! [[ $OS_VERSION =~ ^[0-9]+$ ]]; then
+        echo >&2 "FATAL: Couldn't determine OS version ($OS_VERSION)"
+        exit 1
+    fi
+fi
+
 if [[ $OS_TYPE == "fedora" ]]; then
     PKG_MAN="dnf"
 else
@@ -50,6 +83,17 @@ fi
 # Install necessary packages/dependencies
 $PKG_MAN -y install net-tools coreutils gawk expect make beakerlib findutils \
                     procps-ng
+
+if [[ $OS_TYPE == "fedora" ]]; then
+    $PKG_MAN --enablerepo updates-testing -y install beakerlib
+else
+    $PKG_MAN --enablerepo epel-testing -y install beakerlib
+fi
+
+# WORKAROUND: Replace all rlIsRHEL calls with rlIsCentos
+if [[ $OS_TYPE == "centos" ]]; then
+    echo 'rlIsRHEL() { rlIsCentOS "$@"; }' >> /usr/share/beakerlib/testing.sh
+fi
 
 EC=0
 SKIP=0
@@ -72,12 +116,26 @@ do
     SKIP=0
 
     echo "Running test: $test"
+
+    # Check if glob pattern is set
+    if [[ ! -z "$TEST_GLOB" ]]; then
+        # If so, check if it matches current test name
+        TEST_NAME="$(basename $(dirname "$test"))"
+        if ! test_name_relevancy "$TEST_NAME" "$TEST_GLOB"; then
+            echo "Test '$TEST_NAME' excluded by given glob expression: $TEST_GLOB"
+            SKIPPED+=("$test")
+            continue
+        fi
+    fi
+
+    # Makefile is necessary for test execution
     pushd "$(dirname "$test")"
     if [[ ! -f Makefile ]]; then
         echo >&2 "Missing Makefile"
         EC=1
         SKIP=1
     fi
+
     if [[ $SKIP -eq 0 ]]; then
         # Check relevancy
         if relevancy.awk -v os_type=$OS_TYPE -v os_ver=$OS_VERSION Makefile; then
