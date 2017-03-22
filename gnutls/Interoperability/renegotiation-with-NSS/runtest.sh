@@ -32,6 +32,7 @@
 PACKAGE="gnutls"
 PACKAGES="gnutls nss"
 
+GNUTLS_PRIO="NORMAL:+DHE-DSS:+SIGN-DSA-SHA1:+SIGN-DSA-SHA224:+SIGN-DSA-SHA256"
 CLNT="/usr/lib64/nss/unsupported-tools/tstclnt"
 [[ ! -x $CLNT ]] && CLNT="/usr/lib/nss/unsupported-tools/tstclnt"
 SERV="/usr/lib64/nss/unsupported-tools/selfserv"
@@ -369,9 +370,9 @@ rlJournalStart
                 options=(gnutls-cli --rehandshake --x509cafile $(x509Cert ca))
                 options+=(--port 4433)
                 if [[ $proto == "tls1_1" ]]; then
-                    options+=(--priority NORMAL:-VERS-TLS1.2)
+                    options+=(--priority ${GNUTLS_PRIO}:-VERS-TLS1.2)
                 else
-                    options+=(--priority NORMAL:+VERS-TLS1.2)
+                    options+=(--priority ${GNUTLS_PRIO}:+VERS-TLS1.2)
                 fi
                 rlRun -s "${options[*]} localhost </dev/null"
                 rlAssertGrep "ReHandshake was completed" $rlRun_LOG
@@ -413,9 +414,9 @@ rlJournalStart
                 options+=(--x509certfile ${C_CLNT_CERT[$idx]})
                 options+=(--port 4433)
                 if [[ $proto == "tls1_1" ]]; then
-                    options+=(--priority NORMAL:-VERS-TLS1.2)
+                    options+=(--priority ${GNUTLS_PRIO}:-VERS-TLS1.2)
                 else
-                    options+=(--priority NORMAL:+VERS-TLS1.2)
+                    options+=(--priority ${GNUTLS_PRIO}:+VERS-TLS1.2)
                 fi
                 rlRun -s "${options[*]} localhost </dev/null"
                 rlAssertGrep "ReHandshake was completed" $rlRun_LOG
@@ -433,7 +434,7 @@ rlJournalStart
                 # GNUTLS server setup
                 options=(gnutls-serv --x509keyfile ${C_KEY[$idx]})
                 options+=(--x509certfile '<(cat ${C_CERT[$idx]} ${C_SUBCA[$idx]})')
-                options+=(--http --port 4433 --priority NORMAL:+VERS-TLS1.2)
+                options+=(--http --port 4433 --priority ${GNUTLS_PRIO}:+VERS-TLS1.2)
                 rlRun "${options[*]} >server.log 2>server.err &"
                 gnutls_pid=$!
                 rlRun "rlWaitForSocket -p $gnutls_pid 4433"
@@ -473,7 +474,7 @@ rlJournalStart
                 options=(gnutls-serv --x509keyfile ${C_KEY[$idx]})
                 options+=(--x509cafile '<(cat $(x509Cert ca) ${C_SUBCA[$idx]})')
                 options+=(--x509certfile '<(cat ${C_CERT[$idx]} ${C_SUBCA[$idx]})')
-                options+=(--http --port 4433 --priority NORMAL:+VERS-TLS1.2)
+                options+=(--http --port 4433 --priority ${GNUTLS_PRIO}:+VERS-TLS1.2)
                 options+=(--require-client-cert --verify-client-cert)
                 rlRun "${options[*]} >server.log 2>server.err &"
                 gnutls_pid=$!
