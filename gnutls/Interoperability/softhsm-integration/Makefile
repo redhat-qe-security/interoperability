@@ -57,5 +57,5 @@ $(METADATA): Makefile
 	@echo "License:         GPLv2+" >> $(METADATA)
 	@echo "Confidential:    yes" >> $(METADATA)
 	@echo "Destructive:     no" >> $(METADATA)
-	@echo "Releases:        -RHEL4 -RHELClient5 -RHELServer5 -RHEL6 -RHEL7" >> $(METADATA)
+	@echo "Releases:        -RHEL4 -RHELClient5 -RHELServer5 -RHEL6" >> $(METADATA)
 
