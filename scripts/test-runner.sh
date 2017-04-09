@@ -41,6 +41,51 @@ function test_name_relevancy() {
     return $RES
 }
 
+# Compile a supported SSL/TLS library from sources
+# If the 'library-repo' file exists in the root of the repository, this
+# function parses it and compiles the SSL/TLS library according that
+# configuration.
+#
+# Format of library-repo file:
+# export DEV_LIBRARY_NAME="name" # where name could be gnutls, nss or openssl
+# export DEV_LIBRARY_REPO="repo_address" # Repository address
+# export DEV_LIBRARY_BRANCH="branch_name" # Repository branch
+#
+# Example:
+# export DEV_LIBRARY_NAME="gnutls"
+# export DEV_LIBRARY_REPO="https://gitlab.com/gnutls/gnutls.git"
+# export DEV_LIBRARY_BRANCH="gnutls_3_5_11"
+#
+function compile_library() {
+    local LIBRARY_FILE="/workspace/library-repo"
+    local COMPILE_SCRIPT="/workspace/scripts/lib-compile.sh"
+
+    if [[ ! -f $LIBRARY_FILE ]]; then
+        echo "No 'library-repo' file found, continuing without compilation..."
+        return 0
+    fi
+
+    source "${LIBRARY_FILE}"
+
+    for var in REPO BRANCH NAME; do
+        exp="DEV_LIBRARY_${var}"
+        if [[ -z ${exp} ]]; then
+            echo >&2 "Missing '${exp}'"
+            return 1
+        fi
+    done
+
+    chmod +x "$COMPILE_SCRIPT"
+    $COMPILE_SCRIPT "$DEV_LIBRARY_NAME" "$DEV_LIBRARY_REPO" "$DEV_LIBRARY_BRANCH"
+    EC=$?
+
+    if [[ $EC -ne 0 ]]; then
+        cat "${DEV_LIBRARY_NAME}/build.log"
+    fi
+
+    return $EC
+}
+
 set +x
 
 if [[ $# < 3 ]]; then
@@ -65,9 +110,9 @@ if [[ $OS_VERSION == "latest" ]]; then
 fi
 
 if [[ $OS_TYPE == "fedora" ]]; then
-    PKG_MAN="dnf"
+    export PKG_MAN="dnf"
 else
-    PKG_MAN="yum"
+    export PKG_MAN="yum"
 fi
 
 fold_start "machine-setup"
@@ -93,6 +138,12 @@ fi
 # WORKAROUND: Replace all rlIsRHEL calls with rlIsCentos
 if [[ $OS_TYPE == "centos" ]]; then
     echo 'rlIsRHEL() { rlIsCentOS "$@"; }' >> /usr/share/beakerlib/testing.sh
+fi
+
+# Library compilation
+if ! compile_library; then
+    echo >&2 "Library compilation failed"
+    exit 1
 fi
 
 EC=0
