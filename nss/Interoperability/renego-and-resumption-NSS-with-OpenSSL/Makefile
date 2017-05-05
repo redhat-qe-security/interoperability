@@ -29,7 +29,8 @@ export TESTVERSION=1.0
 
 BUILT_FILES=
 
-FILES=$(METADATA) runtest.sh Makefile PURPOSE nss-client.expect
+FILES=$(METADATA) runtest.sh Makefile PURPOSE nss-client.expect \
+                  nss-server.expect openssl-client.expect
 
 .PHONY: all install download clean
 
